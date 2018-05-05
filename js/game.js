@@ -10,7 +10,7 @@ Game = function(canvasId) {
 
     // On lance la camera du jouer
     var _player = new Player(_this, canvas);
-    // On lance la scene (lumières, meshs.. )
+    // On lance la scene (lumières, meshes.. )
     var _arena = new Arena(_this);
 
     // Permet au jeu de tourner
