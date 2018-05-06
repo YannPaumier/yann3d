@@ -1,6 +1,8 @@
 Weapon = function(player) {
     // On permet d'accéder à Player n'importe où dans Weapons
     this.Player = player;
+    // Import de l'armurerie depuis Game
+    this.Armory = this.Player.game.armory;
 
     // Positions selon l'arme non utilisée
     this.bottomPosition = new BABYLON.Vector3(0.5,-2.5, 1);
@@ -9,13 +11,24 @@ Weapon = function(player) {
     this.topPositionY = -0.5;
 
     /*
-    * Gestion de l'arme
+    * Gestion des armes
     */
-    // Créons notre arme
-    this.rocketLauncher = this.newWeapon(this.Player);
+    // Ajout de l'inventaire
+    this.inventory = [];
+
+    // Appel de newWeapon pour créer l'arme qui a pour nom Ezekiel
+    var ezekiel = this.newWeapon('Ezekiel')
+    this.inventory[0] = ezekiel;
+
+    // Notre arme actuelle est Ezekiel, qui se trouve en deuxième position
+    // dans le tableau des armes dans Armory
+    this.actualWeapon = this.inventory.length -1;
+
+    // On dit que notre arme en main est l'arme active
+    this.inventory[this.actualWeapon].isActive = true;
 
     // Cadence de tir
-    this.fireRate = 800;
+    this.fireRate = this.Armory.weapons[this.inventory[this.actualWeapon].typeWeapon].setup.cadency;
 
     // Delta de calcul pour savoir quand le tir est a nouveau disponible
     this._deltaFireRate = this.fireRate;
@@ -46,27 +59,39 @@ Weapon = function(player) {
 
 Weapon.prototype = {
 
-  newWeapon : function(Player) {
-      var newWeapon;
-      newWeapon = BABYLON.Mesh.CreateBox('rocketLauncher', 0.5, Player.scene);
+  newWeapon : function(typeWeapon) {
+    var newWeapon;
+    for (var i = 0; i < this.Armory.weapons.length; i++) {
+        if(this.Armory.weapons[i].name === typeWeapon){
 
-      // Nous faisons en sorte d'avoir une arme d'apparence plus longue que large
-      newWeapon.scaling = new BABYLON.Vector3(1, 0.7, 2);
+            newWeapon = BABYLON.Mesh.CreateBox('rocketLauncher', 0.5, this.Player.game.scene);
 
-      // On l'associe à la caméra pour qu'il bouge de la même facon
-      newWeapon.parent = Player.camera;
+            // Nous faisons en sorte d'avoir une arme d'apparence plus longue que large
+            newWeapon.scaling = new BABYLON.Vector3(1,0.7,2);
 
-      // On positionne le mesh APRES l'avoir attaché à la caméra
-      newWeapon.position = this.bottomPosition.clone();
-      newWeapon.position.y = this.topPositionY;
+            // On l'associe à la caméra pour qu'il bouge de la même facon
+            newWeapon.parent = this.Player.camera;
 
-      // Ajoutons un material Rouge pour le rendre plus visible
-      var materialWeapon = new BABYLON.StandardMaterial('rocketLauncherMat', Player.scene);
-      materialWeapon.diffuseColor=new BABYLON.Color3(0.6, 0.08, 0.06);
+            // On positionne le mesh APRES l'avoir attaché à la caméra
+            newWeapon.position = this.bottomPosition.clone();
 
-      newWeapon.material = materialWeapon;
+            newWeapon.isPickable = false;
 
-      return newWeapon
+            // Ajoutons un material de l'arme pour le rendre plus visible
+            var materialWeapon = new BABYLON.StandardMaterial('rocketLauncherMat', this.Player.game.scene);
+            materialWeapon.diffuseColor=this.Armory.weapons[i].setup.colorMesh;
+
+            newWeapon.material = materialWeapon;
+
+            newWeapon.typeWeapon = i;
+
+            newWeapon.isActive = false;
+            break;
+        }else if(i === this.Armory.weapons.length -1){
+            console.log('UNKNOWN WEAPON');
+        }
+    };
+        return newWeapon;
     },
 
   fire : function(pickInfo) {
@@ -77,39 +102,132 @@ Weapon.prototype = {
       this.launchBullets = false;
     },
 
+  nextWeapon : function(way) {
+    // On définit armoryWeapons pour accéder plus facilement à Armory
+    var armoryWeapons = this.Armory.weapons;
+
+    // On dit que l'arme suivante est logiquement l'arme plus le sens donné
+    var nextWeapon = this.inventory[this.actualWeapon].typeWeapon + way;
+
+    //on définit actuellement l'arme possible utilisable à 0 pour l'instant
+    var nextPossibleWeapon = null;
+
+    // Si le sens est positif
+    if(way>0){
+        // La boucle commence depuis nextWeapon
+        for (var i = nextWeapon; i < nextWeapon + this.Armory.weapons.length; i++) {
+            // L'arme qu'on va tester sera un modulo de i et de la longueur de Weapon
+            var numberWeapon = i % this.Armory.weapons.length;
+            // On compare ce nombre aux armes qu'on a dans l'inventaire
+            for (var y = 0; y < this.inventory.length; y++) {
+                if(this.inventory[y].typeWeapon === numberWeapon){
+                    // Si on trouve quelque chose, c'est donc une arme qui vient arès la nôtre
+                    nextPossibleWeapon = y;
+                    break;
+                }
+            }
+            // Si on a trouvé une arme correspondante, on n'a plus besoin de la boucle for
+            if(nextPossibleWeapon != null){
+                break;
+            }
+        }
+    }else {
+        for (var i = nextWeapon; ; i--) {
+            if(i<0){
+                i = this.Armory.weapons.length;
+            }
+            var numberWeapon = i;
+            for (var y = 0; y < this.inventory.length; y++) {
+                if(this.inventory[y].typeWeapon === numberWeapon){
+                    nextPossibleWeapon = y;
+                    break;
+                }
+            }
+            if(nextPossibleWeapon != null){
+                break;
+            }
+        }
+    }
+    console.log("possible : " + nextPossibleWeapon)
+    console.log("actual : " +this.actualWeapon)
+    if(this.actualWeapon != nextPossibleWeapon){
+      console.log(nextPossibleWeapon);
+      // On dit à notre arme actuelle qu'elle n'est plus active
+      this.inventory[this.actualWeapon].isActive = false;
+      // On change l'arme actuelle avec celle qu'on a trouvé
+      this.actualWeapon = nextPossibleWeapon;
+      // On dit à notre arme choisie qu'elle est l'arme active
+      this.inventory[this.actualWeapon].isActive = true;
+
+      // On actualise la cadence de l'arme
+      this.fireRate = this.Armory.weapons[this.inventory[this.actualWeapon].typeWeapon].setup.cadency;
+      this._deltaFireRate = this.fireRate;
+    }
+  },
+
   launchFire : function() {
-      _this = this;
-      if (this.canFire) {
-          console.log('Pew !');
-          var renderWidth = _this.Player.game.engine.getRenderWidth(true);
-          var renderHeight = _this.Player.game.engine.getRenderHeight(true);
+    _this = this;
+    if (this.canFire) {
+      console.log('Pew !');
+      // Id de l'arme en main
+      var idWeapon = _this.inventory[_this.actualWeapon].typeWeapon;
+      var weaponAmmos = _this.inventory[_this.actualWeapon].ammos;
 
-          var direction = _this.Player.scene.pick(renderWidth/2,renderHeight/2);
+      // Détermine la taille de l'écran
+      var renderWidth = _this.Player.game.engine.getRenderWidth(true);
+      var renderHeight = _this.Player.game.engine.getRenderHeight(true);
 
-          if(direction.pickedPoint){
-            direction = direction.pickedPoint.subtractInPlace(_this.Player.camera.position);
+      // Cast un rayon au centre de l'écran
+      var direction = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2,function (item) {
+        if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitBoxPlayer")
+            return false;
+        else
+            return true;
+      });
+
+      // Si l'arme est une arme de distance
+      if(_this.Armory.weapons[idWeapon].type === 'ranged'){
+        if(_this.Armory.weapons[idWeapon].setup.ammos.type === 'rocket'){
+            direction = direction.pickedPoint.subtractInPlace(_this.Player.camera.playerBox.position);
             direction = direction.normalize();
-          }
 
-
-          _this.createRocket(this.Player.camera.playerBox, direction)
-          _this.canFire = false;
-      } else {
-          // Nothing to do : cannot fire
+            _this.createRocket(_this.Player.camera.playerBox, direction)
+        }else if(_this.Armory.weapons[idWeapon].setup.ammos.type === 'bullet'){
+            // Nous devons tirer des balles simples
+            this.shootBullet(direction)
+        }else{
+            // Nous devons tirer au laser
+            this.createLaser(direction)
+        }
+      }else{
+        // Si ce n'est pas une arme à distance, il faut attaquer au corps-à-corps
+        this.hitHand(direction)
+      }
+      _this.canFire = false;
       }
     },
 
   createRocket : function(playerPosition, direction) {
       _this = this;
-      var positionValue = this.rocketLauncher.absolutePosition.clone();
+
+      // Permet de connaitre l'id de l'arme dans Armory.js
+      var idWeapon = _this.inventory[this.actualWeapon].typeWeapon;
+
+      // Les paramètres de l'arme
+      var setupRocket = _this.Armory.weapons[idWeapon].setup.ammos;
+
+      var positionValue = this.inventory[this.actualWeapon].absolutePosition.clone();
+
       var rotationValue = playerPosition.rotation;
       var newRocket = BABYLON.Mesh.CreateBox("rocket", 0.5, this.Player.scene);
 
-      newRocket.direction = new BABYLON.Vector3(
+      newRocket.direction = direction;
+    /*  newRocket.direction = new BABYLON.Vector3(
           Math.sin(rotationValue.y) * Math.cos(rotationValue.x),
           Math.sin(-rotationValue.x),
           Math.cos(rotationValue.y) * Math.cos(rotationValue.x)
       )
+      */
       newRocket.position = new BABYLON.Vector3(
           positionValue.x + (newRocket.direction.x * 1) ,
           positionValue.y + (newRocket.direction.y * 1) ,
@@ -120,48 +238,73 @@ Weapon.prototype = {
       newRocket.isPickable = false;
 
       newRocket.material = new BABYLON.StandardMaterial("textureWeapon", this.Player.game.scene);
-      newRocket.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+      newRocket.material.diffuseColor = this.Armory.weapons[idWeapon].setup.colorMesh;
+      newRocket.paramsRocket = this.Armory.weapons[idWeapon].setup;
 
-      /*
-      * Faire avencer la rocket
-      */
-      newRocket.registerAfterRender(function() {
-          // On bouge la roquette vers l'avant
-          newRocket.translate(new BABYLON.Vector3(0,0,1),1,0);
+      // Ajout de la rocket dans le tableau de rocket
+      this.Player.game._rockets.push(newRocket);
 
-          // On crée un rayon qui part de la base de la roquette vers l'avant
-          var rayRocket = new BABYLON.Ray(newRocket.position,newRocket.direction);
+    },
 
-          // On regarde quel est le premier objet qu'on touche
-          var meshFound = newRocket.getScene().pickWithRay(rayRocket);
+    shootBullet : function(meshFound) {
+        // Permet de connaitre l'id de l'arme dans Armory.js
+    	var idWeapon = this.inventory[this.actualWeapon].typeWeapon;
 
-          // Si la distance au premier objet touché est inférieure a 10, on détruit la roquette
-          if(!meshFound || meshFound.distance < 10){
-            // On vérifie qu'on a bien touché quelque chose
-            if(meshFound.pickedMesh){
-                // On crée une sphere qui représentera la zone d'impact
-                var explosionRadius = BABYLON.Mesh.CreateSphere("sphere", 5.0, 20, _this.Player.game.scene);
-                // On positionne la sphère là où il y a eu impact
-                explosionRadius.position = meshFound.pickedPoint;
-                // On fait en sorte que les explosions ne soient pas considérées pour le Ray de la roquette
-                explosionRadius.isPickable = false;
-                // On crée un petit material orange
-                explosionRadius.material = new BABYLON.StandardMaterial("textureExplosion", _this.Player.game.scene);
-                explosionRadius.material.diffuseColor = new BABYLON.Color3(1,0.6,0);
-                explosionRadius.material.specularColor = new BABYLON.Color3(0,0,0);
-                explosionRadius.material.alpha = 0.8;
+        var setupWeapon = this.Armory.weapons[idWeapon].setup;
 
-                // Chaque frame, on baisse l'opacité et on efface l'objet quand l'alpha est arrivé à 0
-                explosionRadius.registerAfterRender(function(){
-                    explosionRadius.material.alpha -= 0.02;
-                    if(explosionRadius.material.alpha<=0){
-                        explosionRadius.dispose();
-                    }
-                });
-            }
-              newRocket.dispose();
+        if(meshFound.hit && meshFound.pickedMesh.isPlayer){
+            // On a touché un joueur
+        }else{
+            // L'arme ne touche pas de joueur
+            console.log('Not Hit Bullet')
+        }
+    },
+
+    hitHand : function(meshFound) {
+      // Permet de connaitre l'id de l'arme dans Armory.js
+    	var idWeapon = this.inventory[this.actualWeapon].typeWeapon;
+
+      var setupWeapon = this.Armory.weapons[idWeapon].setup;
+
+      if(meshFound.hit
+        && meshFound.distance < setupWeapon.range*5
+        && meshFound.pickedMesh.isPlayer){
+          // On a touché un joueur
+      }else{
+          // L'arme frappe dans le vide
+          console.log('Not Hit CaC')
+      }
+    },
+
+    createLaser : function(meshFound) {
+      // Permet de connaitre l'id de l'arme dans Armory.js
+    	var idWeapon = this.inventory[this.actualWeapon].typeWeapon;
+
+      var setupLaser = this.Armory.weapons[idWeapon].setup.ammos;
+
+      var positionValue = this.inventory[this.actualWeapon].absolutePosition.clone();
+
+      if(meshFound.hit){
+          var laserPosition = positionValue;
+          // On crée une ligne tracée entre le pickedPoint et le canon de l'arme
+          let line = BABYLON.Mesh.CreateLines("lines", [
+                      laserPosition,
+                      meshFound.pickedPoint
+          ], this.Player.game.scene);
+          // On donne une couleur aléatoire
+          var colorLine = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+          line.color = colorLine;
+
+          // On élargit le trait pour le rendre visible
+          line.enableEdgesRendering();
+          line.isPickable = false;
+          line.edgesWidth = 40.0;
+          line.edgesColor = new BABYLON.Color4(colorLine.r, colorLine.g, colorLine.b, 1);
+          if(meshFound.pickedMesh.isPlayer){
+              // On inflige des dégâts au joueur
           }
-      })
+          this.Player.game._lasers.push(line);
+      }
     },
 
 };
