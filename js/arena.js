@@ -6,14 +6,14 @@ Arena = function(game) {
     /*
     * Création du background
     */
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", 100.0, scene);
+    var skybox = BABYLON.Mesh.CreateBox("skyBox", 200.0, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.disableLighting = true;
     skybox.material = skyboxMaterial;
     skybox.infiniteDistance = true;
     skyboxMaterial.disableLighting = true;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/sky4", scene);
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/textures/sky4/sky4", scene);
     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skybox.renderingGroupId = 0;
 
