@@ -39,7 +39,7 @@ Player.prototype = {
         this.spawnPoint = this.game.allSpawnPoints[randomPoint];
 
         // On cré la box du player
-        var playerBox = BABYLON.Mesh.CreateBox("headMainPlayer", 3, scene);
+        var playerBox = BABYLON.Mesh.CreateBox("headMainPlayer", 1, scene);
         playerBox.position = this.spawnPoint.clone();
         playerBox.ellipsoid = new BABYLON.Vector3(2, 2, 2);
 

@@ -16,9 +16,15 @@ Weapon = function(player) {
     // Ajout de l'inventaire
     this.inventory = [];
 
-    // Appel de newWeapon pour créer l'arme qui a pour nom Ezekiel
-    var ezekiel = this.newWeapon('Ezekiel')
+    // Appel de newWeapon pour la création des armes
+    var ezekiel = this.newWeapon('Ezekiel');
+    var Timmy = this.newWeapon('Timmy');
+    var Crook = this.newWeapon('Crook');
+    var Armageddon = this.newWeapon('Armageddon')
     this.inventory[0] = ezekiel;
+    this.inventory[1] = Timmy;
+    this.inventory[2] = Crook;
+    this.inventory[3] = Armageddon;
 
     // Notre arme actuelle est Ezekiel, qui se trouve en deuxième position
     // dans le tableau des armes dans Armory
@@ -103,6 +109,7 @@ Weapon.prototype = {
     },
 
   nextWeapon : function(way) {
+    console.log(way);
     // On définit armoryWeapons pour accéder plus facilement à Armory
     var armoryWeapons = this.Armory.weapons;
 
@@ -148,8 +155,8 @@ Weapon.prototype = {
             }
         }
     }
-    console.log("possible : " + nextPossibleWeapon)
-    console.log("actual : " +this.actualWeapon)
+    //console.log("possible : " + nextPossibleWeapon)
+    //console.log("actual : " +this.actualWeapon)
     if(this.actualWeapon != nextPossibleWeapon){
       console.log(nextPossibleWeapon);
       // On dit à notre arme actuelle qu'elle n'est plus active
@@ -178,7 +185,7 @@ Weapon.prototype = {
       var renderHeight = _this.Player.game.engine.getRenderHeight(true);
 
       // Cast un rayon au centre de l'écran
-      var direction = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2,function (item) {
+      var direction = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2, function(item) {
         if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitBoxPlayer")
             return false;
         else
