@@ -81,6 +81,7 @@ Armory = function(game, player) {
                     'spread' : 1,
                     'baseAmmos' : 5,
                     'maximum' : 15,
+                    'meshAmmosName' : 'Laser',
                     'refuel' : 5
                 },
                 'colorMesh' : new BABYLON.Color3((133/255), (39/255), (139/255))

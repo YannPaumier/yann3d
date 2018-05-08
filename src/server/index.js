@@ -93,10 +93,9 @@ var ammosBoxes = [
 {x:-70, y:1.5,z:-20,t:3,v:1},
 ];
 
-var props = [bonusBoxes,weaponBoxes,ammosBoxes]
+var props = [bonusBoxes, weaponBoxes, ammosBoxes]
 var countUsers = 0; // number of users since the beginning of the server
 // ================================================
-
 
 
 // ================================================
@@ -155,7 +154,7 @@ socket.on('distributeDamage', function(data) {
 socket.on('killPlayer', function(arrayData) {
     var idPlayer = arrayData[0];
     var idKiller = arrayData[1];
-    for(var i=0;i<room.length;i++){
+    for(var i=0; i < room.length; i++){
         if(room[i].id === idKiller){
             if(idKiller === idPlayer){
                 room[i].score--;

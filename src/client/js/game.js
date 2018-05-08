@@ -21,14 +21,16 @@ Game = function(canvasId, playerConfig, props) {
     new BABYLON.Vector3(30, 5, -90),
     new BABYLON.Vector3(90, 5, -90)
     ];
-    // On lance la camera du jouer
-    var _player = new Player(_this, canvas);
-    this._PlayerData = _player;
+
 
     // On lance la scene (lumières, meshes.. ) et les props
     var _arena = new Arena(_this, props);
     this._ArenaData = _arena;
 
+    // On lance la camera du jouer
+    var _player = new Player(_this, canvas);
+    this._PlayerData = _player;
+    
     // Les roquettes générées dans Player.js
     this._rockets = [];
     this._lasers = [];

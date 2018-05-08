@@ -27,11 +27,11 @@ Arena = function(game, props) {
     var light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, -1, 0), scene);
     //light.diffuse = new BABYLON.Color3(1, 1, 1);
     light2.specular = new BABYLON.Color3(0, 0, 0);
-    light.intensity = 0.7;
-    light2.intensity = 0.7;
+    light.intensity = 0.5;
+    light2.intensity = 0.5;
     // Création des lumières pour les ombres
     var light3 = new BABYLON.PointLight("Spot0", new BABYLON.Vector3(-300, 200, -120), scene);
-    light3.intensity = 3;
+    light3.intensity = 2;
     light3.specular = new BABYLON.Color3(0,0,0);
     // Gérer les ombres
     var shadowGenerator1 = new BABYLON.ShadowGenerator(2048, light3);
@@ -41,13 +41,13 @@ Arena = function(game, props) {
 
     // Initialisation d'un materiel pour le mesh ground
     var materialGround = new BABYLON.StandardMaterial("groundTexture", scene);
-    materialGround.diffuseTexture = new BABYLON.Texture("https://raw.githubusercontent.com/YannPaumier/yann3d/master/assets/images/brick.jpg", scene);
-    materialGround.diffuseTexture.uScale = 10.0;
-    materialGround.diffuseTexture.vScale = 10.0;
+    materialGround.diffuseTexture = new BABYLON.Texture("src/client/assets/images/sand.jpg", scene);
+    materialGround.diffuseTexture.uScale = 15.0;
+    materialGround.diffuseTexture.vScale = 15.0;
 
     // Material pour les objets
     var materialWall = new BABYLON.StandardMaterial("wallexture", scene);
-    materialWall.diffuseTexture = new BABYLON.Texture("https://raw.githubusercontent.com/YannPaumier/yann3d/master/assets/images/wood.jpg", scene);
+    materialWall.diffuseTexture = new BABYLON.Texture("src/client/assets/images/wood.jpg", scene);
 
     // Ajoutons un sol de 20 par 20
     var ground = BABYLON.Mesh.CreateGround("ground1", 100, 100, 2, scene);
@@ -197,11 +197,12 @@ Arena.prototype = {
 
      // On affecte à l'objet son type
     newBonus.typeBonus = typeBonus;
+    console.log(typeBonus);
 
     return newBonus;
 },
 
-newWeaponSet : function(position,type) {
+newWeaponSet : function(position, type) {
     var typeWeapons = type;
     var positionWeapon = position;
 
@@ -218,7 +219,7 @@ newWeaponSet : function(position,type) {
     return newSetWeapon;
 },
 
-newAmmo : function(position,type) {
+newAmmo : function(position, type) {
     var typeAmmos = type;
     var positionAmmo = position;
     var newAmmo = BABYLON.Mesh.CreateBox(this.game.armory.weapons[typeAmmos].name, 1.0, this.game.scene);
@@ -314,7 +315,7 @@ _checkProps : function(){
 
             Weapons.reloadWeapon(this.ammosBox[i].typeAmmo, paramsAmmos.refuel);
             this.displayNewPicks(paramsAmmos.meshAmmosName);
-            
+
             this.pickableDestroyed(this.ammosBox[i].idServer, 'ammos');
             this.ammosBox[i].dispose();
             this.ammosBox.splice(i,1)

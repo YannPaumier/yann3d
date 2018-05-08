@@ -27,6 +27,9 @@ Player = function(game, canvas) {
     // Initialisation de la caméra
     this._initCamera(this.scene, canvas);
 
+    // Initisalisation des graphisme
+    this._initGraphism(this.scene, this.camera);
+
     // Le joueur doit cliquer dans la scène pour que controlEnabled soit changé
     this.controlEnabled = false;
     // Axe de mouvement X et Z
@@ -96,6 +99,50 @@ Player.prototype = {
         hitBoxPlayer.isMain = true;
 
     },
+
+   _initGraphism : function (scene, camera){
+        var defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, scene, [camera]);
+         defaultPipeline.fxaaEnabled = false;
+         defaultPipeline.bloomEnabled = false;
+         defaultPipeline.grainEnabled = true;
+         defaultPipeline.grain.intensity = 3;
+         /*
+         defaultPipeline.depthOfFieldEnabled = true;
+         defaultPipeline.depthOfFieldBlurLevel = BABYLON.DepthOfFieldEffectBlurLevel.Low;
+         defaultPipeline.depthOfField.focusDistance = 150;
+         defaultPipeline.depthOfField.fStop = 8.0;
+         defaultPipeline.depthOfField.focalLength = 1.0;
+         */
+
+         //BLUR
+         /*
+         var pipeline = new BABYLON.StandardRenderingPipeline("standard", scene, 1.0, null, [camera]);
+        //ipeline.lensTexture = pipeline.lensFlareDirtTexture = new BABYLON.Texture("/textures/lensdirt.jpg", scene);
+        //pipeline.lensStarTexture = new BABYLON.Texture("/textures/lensstar.png", scene);
+        //pipeline.lensColorTexture = new BABYLON.Texture("/textures/lenscolor.png", scene);
+        pipeline.MotionBlurEnabled = true;
+        pipeline.motionStrength = 0.2;
+        pipeline.motionBlurSamples = 32;
+        */
+
+        // VOLUMETRIC LIGHT
+        /*
+        var light3 = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(-300, 200, -120), scene);
+        // Enable Volumetric Lights computation in the pipeline
+        defaultPipeline.VLSEnabled = true;
+        // First, give the source light to the pipeline which must be a spot light or a directional light
+        // The volumetric lights post-process needs a shadow map in order to work: it is used to test obstacles for the light rays
+        // Then, the source light mush have a shadows generator:
+        defaultPipeline.sourceLight = scene.getLightByName("DirectionalLight");
+
+        // This represents the intensity of fog in the air. In other words, the light rays intensity in the shadow
+        defaultPipeline.volumetricLightPower = 6;
+
+        // This represents the overall quality of the volumetric lights post-process in interval [0, 100].
+        // The default value is 50.0 and is enough for a good result
+        defaultPipeline.volumetricLightStepsCount = 50;
+        */
+   },
 
     // Determiner quand la souris est intégrée dans le canvas (après un click)
     _initPointerLock : function() {
@@ -318,7 +365,9 @@ Player.prototype = {
             }
         }, false);
 
-        // Changement des armes
+        /*
+        * Changement des armes
+        */
         this.previousWheeling = 0;
 
         canvas.addEventListener("mousewheel", function(evt) {
@@ -337,6 +386,26 @@ Player.prototype = {
             }
 
         }, false);
+
+        window.addEventListener("keydown", function(evt) {
+
+          switch(evt.keyCode){
+              case 49:
+                _this.camera.weapons.chooseWeapon(0);
+              break;
+              case 50:
+                _this.camera.weapons.chooseWeapon(1);
+              break;
+              case 51:
+                _this.camera.weapons.chooseWeapon(2);
+              break;
+              case 52:
+                _this.camera.weapons.chooseWeapon(3);
+              break;
+          }
+
+        }, false);
+
 
         /*
         * Gestion du saut

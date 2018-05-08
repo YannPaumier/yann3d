@@ -167,6 +167,45 @@ Weapon.prototype = {
       this.launchBullets = false;
     },
 
+  chooseWeapon : function(idWeapon){
+    if(this.actualWeapon != idWeapon && this.inventory[idWeapon]){
+      // On dit à l'arme de se repositionner à son emplacement initial
+      this.inventory[this.actualWeapon].position =
+      this.inventory[this.actualWeapon].basePosition.clone();
+
+      this.inventory[this.actualWeapon].rotation =
+      this.inventory[this.actualWeapon].baseRotation.clone();
+
+      // On reset _animationDelta
+      this._animationDelta = 0;
+
+      // On dit à notre arme actuelle qu'elle n'est plus active
+      this.inventory[this.actualWeapon].isActive = false;
+      // On change l'arme actuelle avec celle qu'on a trouvé
+      this.actualWeapon = idWeapon;
+      // On dit à notre arme choisie qu'elle est l'arme active
+      this.inventory[this.actualWeapon].isActive = true;
+
+      // On actualise la cadence de l'arme
+      this.fireRate = this.Armory.weapons[this.inventory[this.actualWeapon].typeWeapon].setup.cadency;
+      this._deltaFireRate = this.fireRate;
+
+      // MAJ HUD
+      var actualTypeWeapon = this.Armory.weapons[this.inventory[this.actualWeapon].typeWeapon];
+      // Si l'arme a des munitions
+      if(actualTypeWeapon.setup.ammos){
+          this.textAmmos.innerText = this.inventory[this.actualWeapon].ammos;
+          this.totalTextAmmos.innerText = actualTypeWeapon.setup.ammos.maximum;
+          this.typeTextWeapon.innerText = actualTypeWeapon.name;
+      }else{
+          // Sinon, le texte est différent
+          this.typeTextWeapon.innerText = actualTypeWeapon.name;
+          this.textAmmos.innerText = "Inf";
+          this.totalTextAmmos.innerText = "Inf";
+      }
+  }
+  },
+
   nextWeapon : function(way) {
     // On définit armoryWeapons pour accéder plus facilement à Armory
     var armoryWeapons = this.Armory.weapons;
@@ -213,44 +252,8 @@ Weapon.prototype = {
             }
         }
     }
-    //console.log("possible : " + nextPossibleWeapon)
-    //console.log("actual : " +this.actualWeapon)
-    if(this.actualWeapon != nextPossibleWeapon){
-      // On dit à l'arme de se repositionner à son emplacement initial
-      this.inventory[this.actualWeapon].position =
-      this.inventory[this.actualWeapon].basePosition.clone();
+    this.chooseWeapon(nextPossibleWeapon);
 
-      this.inventory[this.actualWeapon].rotation =
-      this.inventory[this.actualWeapon].baseRotation.clone();
-
-      // On reset _animationDelta
-      this._animationDelta = 0;
-
-      // On dit à notre arme actuelle qu'elle n'est plus active
-      this.inventory[this.actualWeapon].isActive = false;
-      // On change l'arme actuelle avec celle qu'on a trouvé
-      this.actualWeapon = nextPossibleWeapon;
-      // On dit à notre arme choisie qu'elle est l'arme active
-      this.inventory[this.actualWeapon].isActive = true;
-
-      // On actualise la cadence de l'arme
-      this.fireRate = this.Armory.weapons[this.inventory[this.actualWeapon].typeWeapon].setup.cadency;
-      this._deltaFireRate = this.fireRate;
-
-      // MAJ HUD
-      var actualTypeWeapon = this.Armory.weapons[this.inventory[this.actualWeapon].typeWeapon];
-      // Si l'arme a des munitions
-      if(actualTypeWeapon.setup.ammos){
-          this.textAmmos.innerText = this.inventory[this.actualWeapon].ammos;
-          this.totalTextAmmos.innerText = actualTypeWeapon.setup.ammos.maximum;
-          this.typeTextWeapon.innerText = actualTypeWeapon.name;
-      }else{
-          // Sinon, le texte est différent
-          this.typeTextWeapon.innerText = actualTypeWeapon.name;
-          this.textAmmos.innerText = "Inf";
-          this.totalTextAmmos.innerText = "Inf";
-      }
-    }
   },
 
   animateMovementWeapon : function(step){
