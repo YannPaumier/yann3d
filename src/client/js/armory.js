@@ -7,6 +7,7 @@ Armory = function(game, player) {
                 'meshName': 'Crook'
             },
             'type':'closeCombat',
+            'timeAnimation' : 400,
             'setup':{
                 // Distance de frappe de l'arme de CaC
                 'range': 2,
@@ -22,6 +23,7 @@ Armory = function(game, player) {
                 'meshName': 'Timmy'
             },
             'type':'ranged',
+            'timeAnimation' : 400,
             'setup':{
                 'damage' : 2,
                 'cadency' : 50,
@@ -41,6 +43,7 @@ Armory = function(game, player) {
                 'meshName': 'Ezekiel'
             },
             'type':'ranged',
+            'timeAnimation' : 400,
             'setup':{
                 'damage' : 30,
                 'cadency' : 800,
@@ -69,6 +72,7 @@ Armory = function(game, player) {
                 'meshName': 'Armageddon'
             },
             'type':'ranged',
+            'timeAnimation' : 400,
             'setup':{
                 'damage' : 1000,
                 'cadency' : 2000,
@@ -83,5 +87,28 @@ Armory = function(game, player) {
             }
         }
     ];
+
+    this.bonuses=[
+        {
+            'name': 'mHealth',
+            'message' : 'Gros pack de santé',
+            'type':'health',
+            'value': 75
+        },
+        {
+            'name':'lHealth',
+            'message' : 'Petit pack de santé',
+            'type':'health',
+            'value': 20
+        },
+        {
+            'name' : 'lArmor',
+            'message' : 'Petit pack d\'armure',
+            'type':'armor',
+            'value': 20
+        }
+    ];
+
+    this.multiKillAnnoucement=["Double Kill", "Multi Kill", "Mega Kill", "ULTRA KILL", "LUDICROUS", "TEETH SHOWER", "INSANE", "DEMONIC", "HAIL THE HELIX", "ASS CRUSHER", "DIVINE", "GENOCIDE","OMFWTFBBQ", "42" , "HOLY SHIT"];
     return 1
 };

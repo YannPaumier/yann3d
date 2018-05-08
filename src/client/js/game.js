@@ -1,5 +1,5 @@
 // Interactions entre le joueur et le jeu
-Game = function(canvasId) {
+Game = function(canvasId, playerConfig, props) {
     // Canvas et engine défini ici
     var canvas = document.getElementById(canvasId);
     var engine = new BABYLON.Engine(canvas, true);
@@ -25,9 +25,9 @@ Game = function(canvasId) {
     var _player = new Player(_this, canvas);
     this._PlayerData = _player;
 
-    // On lance la scene (lumières, meshes.. )
-    var _arena = new Arena(_this);
-
+    // On lance la scene (lumières, meshes.. ) et les props
+    var _arena = new Arena(_this, props);
+    this._ArenaData = _arena;
 
     // Les roquettes générées dans Player.js
     this._rockets = [];
@@ -45,6 +45,9 @@ Game = function(canvasId) {
 
       // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
       _player._checkMove((_this.fps)/60);
+
+      // On check les props
+      _this._ArenaData._checkProps();
 
       // On apelle nos deux fonctions de calcul pour les roquettes
       _this.renderRockets();
@@ -105,6 +108,9 @@ Game.prototype = {
 
     renderRockets : function() {
       for (var i = 0; i < this._rockets.length; i++) {
+        // Les paramètres de la roquette
+        var paramsRocket = this._rockets[i].paramsRocket;
+
         // On bouge la roquette vers l'avant
         this._rockets[i].translate(new BABYLON.Vector3(0,0,1),1,0);
 
@@ -137,7 +143,12 @@ Game.prototype = {
                   // Envoi à la fonction d'affectation des dégâts
                   console.log('hit');
                   // Envoi à la fonction d'affectation des dégâts
-                  this._PlayerData.getDamage(30)
+                  if(this._rockets[i].owner){
+                      var whoDamage = this._rockets[i].owner;
+                  }else{
+                      var whoDamage = false;
+                  }
+                  this._PlayerData.getDamage(paramsRocket.damage,whoDamage);
               }
               // On envoi l'explostion dans le tableau
               this._explosionRadius.push(explosionRadius);
@@ -146,10 +157,57 @@ Game.prototype = {
             // On enlève de l'array _rockets le mesh numéro i (défini par la boucle)
             this._rockets.splice(i,1);
         }else { // Prendre en compte les FPS pour modifier la vitesse de la rocket
-          let relativeSpeed = 1 / ((this.fps)/60);
+          let relativeSpeed = paramsRocket.ammos.rocketSpeed / ((this.fps)/60);
           this._rockets[i].position.addInPlace(this._rockets[i].direction.scale(relativeSpeed))
         }
       };
+    },
+
+    createGhostRocket : function(dataRocket) {
+          var positionRocket = dataRocket[0];
+          var rotationRocket = dataRocket[1];
+          var directionRocket = dataRocket[2];
+          var idPlayer = dataRocket[3];
+
+          newRocket = BABYLON.Mesh.CreateBox('rocket', 0.5, this.scene);
+
+          newRocket.scaling = new BABYLON.Vector3(1,0.7,2);
+
+          newRocket.direction = new BABYLON.Vector3(directionRocket.x,directionRocket.y,directionRocket.z);
+
+          newRocket.position = new BABYLON.Vector3(
+              positionRocket.x + (newRocket.direction.x * 1) ,
+              positionRocket.y + (newRocket.direction.y * 1) ,
+              positionRocket.z + (newRocket.direction.z * 1));
+          newRocket.rotation = new BABYLON.Vector3(rotationRocket.x,rotationRocket.y,rotationRocket.z);
+
+          newRocket.scaling = new BABYLON.Vector3(0.5,0.5,1);
+          newRocket.isPickable = false;
+          newRocket.owner = idPlayer;
+
+          newRocket.material = new BABYLON.StandardMaterial("textureWeapon", this.scene, false, BABYLON.Mesh.DOUBLESIDE);
+          newRocket.material.diffuseColor = this.armory.weapons[2].setup.colorMesh;
+          newRocket.paramsRocket = this.armory.weapons[2].setup;
+
+          game._rockets.push(newRocket);
+      },
+
+    createGhostLaser : function(dataRocket){
+        var position1 = dataRocket[0];
+        var position2 = dataRocket[1];
+        var idPlayer = dataRocket[2];
+
+        let line = BABYLON.Mesh.CreateLines("lines", [
+                    position1,
+                    position2
+                ], this.scene);
+        var colorLine = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+        line.color = colorLine;
+        line.enableEdgesRendering();
+        line.isPickable = false;
+        line.edgesWidth = 40.0;
+        line.edgesColor = new BABYLON.Color4(colorLine.r, colorLine.g, colorLine.b, 1);
+        this._lasers.push(line);
     },
 
     renderExplosionRadius : function() {
@@ -176,6 +234,20 @@ Game.prototype = {
           }
       }
     },
+
+    displayScore(room){
+        if(room.length>=5){
+            var limitLoop = 4;
+        }else{
+            var limitLoop = room.length-1;
+        }
+        var indexName = 0;
+        for (var i = 0; i <= limitLoop ; i++) {
+            document.getElementById('player'+indexName).innerText = room[i].name;
+            document.getElementById('scorePlayer'+indexName).innerText = room[i].score;
+            indexName++;
+        }
+    }
 };
 
 // ------------------------- TRANSFO DE DEGRES/RADIANS

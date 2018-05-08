@@ -4,10 +4,15 @@
   "description": "My first 3d game",
   "main": "src/server/index.js",
   "scripts": {
-    "start": "node ./src/server/index"
+    "start": "node ./src/server/index",
+    "start:dev": "nodemon ./src/server/index"
   },
   "dependencies": {
     "express": "~4.10.2",
     "socket.io": "latest"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1"
   }
 }

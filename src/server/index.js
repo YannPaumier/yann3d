@@ -5,11 +5,7 @@ var express = require('express')
 
 var app = express();
 
-// Serve index.html
-app.use(express.static(__dirname +'./../../'));
-
 var server = http.createServer(app);
-server.listen(process.env.PORT || 3000);
 
 var io = require('socket.io').listen(server);
 
@@ -107,6 +103,9 @@ var countUsers = 0; // number of users since the beginning of the server
 // USE PUBLIC FOLDER AS STATIC FOLDER
 app.use(express.static(__dirname + '/public'));
 app.use('/static', express.static(__dirname + '/public'));
+
+// Serve index.html
+app.use(express.static(__dirname +'./../../'));
 // ================================================
 
 
@@ -130,8 +129,9 @@ var tempUser = {
     score: 0
 };
 room.push(tempUser);
+console.log("room : ");
 console.log(room);
-io.emit('newPlayer',[room,getTopFive(room),props]); // all include sender
+io.emit('newPlayer',[room, getTopFive(room), props]); // all include sender
 
 // ================================================
 // LISTENERS
@@ -297,7 +297,7 @@ io.emit('requestPosition',room);
 
 // ================================================
 // START LISTENING ON THE PORT
-server.listen(3000, function () {
+server.listen(process.env.PORT || 3000, function () {
 var host = server.address().address;
 var port = server.address().port;
 

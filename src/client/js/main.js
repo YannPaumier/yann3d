@@ -1,4 +1,4 @@
-main();
+/*main();
 
 //
 // Start here
@@ -10,3 +10,4 @@ function main() {
     }, false);
 
 }
+*/
