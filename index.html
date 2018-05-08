@@ -4,12 +4,12 @@
     <title>Yann3D</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <link rel="stylesheet" href="css/main.css" type="text/css">
+
     <!-- import de babylon JqueryPop (pour des fonctionnalité mobiles) -->
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
     <!-- FEUILLES CSS -->
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="src/client/css/main.css" />
   </head>
 
   <body>
@@ -31,18 +31,18 @@
     <div id="bottomHud">
         <div id="statusPlayer">
             <div id="lifeBox">
-                <img src="assets/icons/health.svg">
+                <img src="src/client/assets/icons/health.svg">
                 <p><span id="textHealth">0</span> / 100</p>
             </div>
             <div id="armorBox">
-                <img src="assets/icons/armor.svg">
+                <img src="src/client/assets/icons/armor.svg">
                 <p><span id="textArmor">0</span> / 100</p>
             </div>
         </div>
         <div id="statusAmmo">
             <p id="typeWeapon"></p>
             <div id="ammoBox">
-                <img src="assets/icons/ammos.svg">
+                <img src="src/client/assets/icons/ammos.svg">
                 <p><span id="numberAmmos"></span> / <span id="totalAmmos"></span></p>
             </div>
         </div>
@@ -52,17 +52,17 @@
             <p id="textAnouncement"></p>
         </div>
     </div>
-    <div id="crossHair"><img  src="assets/icons/target.svg" /></div>
+    <div id="crossHair"><img  src="src/client/assets/icons/target.svg" /></div>
 
     <!-- CANVAS -->
     <canvas id="renderCanvas"></canvas>
   </body>
 
   <!-- Scripts -->
-  <script src="js/main.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/armory.js"></script>
-  <script src="js/player.js"></script>
-  <script src="js/arena.js"></script>
-  <script src="js/weapon.js"></script>
+  <script src="src/client/js/main.js"></script>
+  <script src="src/client/js/game.js"></script>
+  <script src="src/client/js/armory.js"></script>
+  <script src="src/client/js/player.js"></script>
+  <script src="src/client/js/arena.js"></script>
+  <script src="src/client/js/weapon.js"></script>
 </html>
