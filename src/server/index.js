@@ -5,9 +5,12 @@ var express = require('express')
 
 var app = express();
 
-app.use(express.static(__dirname +'./../../')); //serves the index.html
+// Serve index.html
+app.use(express.static(__dirname +'./../../'));
 
 var server = http.createServer(app);
+server.listen(process.env.PORT || 3000);
+
 var io = require('socket.io').listen(server);
 
 var os = require('os');
