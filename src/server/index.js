@@ -74,23 +74,23 @@ var namesList = [
     "Yankee",
     "Zulu"];
 var spawnPointsList = [
-{x:-20, y:5, z:0},
-{x:0, y:5, z:0},
-{x:20, y:5, z:0},
-{x:40, y:5, z:0}
+{x:-20, y:15, z:0},
+{x:0, y:15, z:0},
+{x:20, y:15, z:0},
+{x:40, y:15, z:0}
 ];
 
 var bonusBoxes = [
-{x:40, y:1.5,z:-20,t:2,v:1},
-{x:-40, y:1.5,z:-20,t:0,v:1}
+{x:40, y:2.5,z:-20,t:2,v:1},
+{x:-40, y:2.5,z:-20,t:0,v:1}
 ];
 var weaponBoxes = [
-{x:40, y:1.5,z:20,t:2,v:1},
-{x:-40, y:1.5,z:20,t:3,v:1}
+{x:40, y:2.5,z:20,t:2,v:1},
+{x:-40, y:2.5,z:20,t:3,v:1}
 ];
 var ammosBoxes = [
-{x:-70, y:1.5,z:20,t:2,v:1},
-{x:-70, y:1.5,z:-20,t:3,v:1},
+{x:-70, y:2.5,z:20,t:2,v:1},
+{x:-70, y:2.5,z:-20,t:3,v:1},
 ];
 
 var props = [bonusBoxes, weaponBoxes, ammosBoxes]
@@ -150,6 +150,20 @@ socket.on('newLaser', function(data) {
 });
 socket.on('distributeDamage', function(data) {
     io.sockets.emit ('giveDamage', data);
+
+    if(data[3]) {
+      var idPlayer = data[2];
+      var idKiller = data[1];
+      for(var i=0; i < room.length; i++){
+          if(room[i].id === idKiller){
+              data[1] = room[i].name;
+          }
+          if(room[i].id === idPlayer){
+              data[2] = room[i].name;
+          }
+      }
+      io.sockets.emit ('announcement', ["headshot", data[1], data[2]]);
+    }
 });
 socket.on('killPlayer', function(arrayData) {
     var idPlayer = arrayData[0];

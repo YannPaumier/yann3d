@@ -23,80 +23,189 @@ Arena = function(game, props) {
     * Gestion des lumières
     */
     // Création de notre lumière principale
-    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 10, 0), scene);
-    var light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, -1, 0), scene);
-    //light.diffuse = new BABYLON.Color3(1, 1, 1);
-    light2.specular = new BABYLON.Color3(0, 0, 0);
-    light.intensity = 0.5;
-    light2.intensity = 0.5;
+    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 0.8;
+
     // Création des lumières pour les ombres
     var light3 = new BABYLON.PointLight("Spot0", new BABYLON.Vector3(-300, 200, -120), scene);
-    light3.intensity = 2;
+    light3.intensity = 3;
     light3.specular = new BABYLON.Color3(0,0,0);
     // Gérer les ombres
     var shadowGenerator1 = new BABYLON.ShadowGenerator(2048, light3);
     shadowGenerator1.usePoissonSampling = true;
     shadowGenerator1.bias = 0.0005;
 
-
-    // Initialisation d'un materiel pour le mesh ground
-    var materialGround = new BABYLON.StandardMaterial("groundTexture", scene);
-    materialGround.diffuseTexture = new BABYLON.Texture("src/client/assets/images/sand.jpg", scene);
-    materialGround.diffuseTexture.uScale = 15.0;
-    materialGround.diffuseTexture.vScale = 15.0;
-
     // Material pour les objets
-    var materialWall = new BABYLON.StandardMaterial("wallexture", scene);
-    materialWall.diffuseTexture = new BABYLON.Texture("src/client/assets/images/wood.jpg", scene);
+    var materialWood = new BABYLON.StandardMaterial("woodtexture", scene);
+    materialWood.diffuseTexture = new BABYLON.Texture("src/client/assets/images/wood.jpg", scene);
 
-    // Ajoutons un sol de 20 par 20
-    var ground = BABYLON.Mesh.CreateGround("ground1", 100, 100, 2, scene);
-    ground.scaling = new BABYLON.Vector3(2,10,3);
-    // On rescale à 2 sur z (pour l'exemple)
-    ground.scaling.z = 2;
-    // On applique la texture
-    ground.material = materialGround;
+    /*
+    * Ground
+    */
+    // Initialisation d'un materiel pour le mesh ground
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+  	groundMaterial.diffuseTexture = new BABYLON.Texture("src/client/assets/textures/ground3.jpg", scene);
+  	groundMaterial.diffuseTexture.uScale = 15;
+  	groundMaterial.diffuseTexture.vScale = 15;
+  	groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
+    var ground = BABYLON.Mesh.CreateGround("ground1", 200, 200, 2, scene);
+    //var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "src/client/assets/textures/heightmap.png", 200, 200, 250, 0, 1, scene, false);
+    //  ground.position.y = 1;
+  	ground.material = groundMaterial;
     // Activer la reception des ombres
     ground.receiveShadows = true;
-    // Box arene
-    var boxArena = BABYLON.Mesh.CreateBox("box1", 200, scene, false, BABYLON.Mesh.BACKSIDE);
+    ground.checkCollisions = true;
+
+    /*
+    * Box arene
+    */
+    var boxArena = BABYLON.Mesh.CreateBox("arena", 200, scene, false, BABYLON.Mesh.BACKSIDE);
     var materialBox = new BABYLON.StandardMaterial("wallexture", scene);
     materialBox.alpha = 0;
     boxArena.material = materialBox;
     boxArena.checkCollisions = true;
 
-    // Notre premier cube qui va servir de modèle
+    /*
+    * Test
+    */
+    /*
+    BABYLON.Animation.AllowMatricesInterpolation = true;
+    BABYLON.SceneLoader.ImportMesh("", "src/client/assets/scenes/land1/", "SampleScene.babylon", scene, function (newMeshes, particleSystems, skeletons) {
+      for (var i = 0; i < newMeshes.length; i++) {
+         newMeshes[i].isVisible = true;
+         newMeshes[i].checkCollisions = true;
+
+       }
+    });
+    */
+
+    /*
+    * Murs
+    */
+    var walls = [];
+    var materialWall = new BABYLON.StandardMaterial("walltexture", scene);
+    materialWall.diffuseTexture = new BABYLON.Texture("src/client/assets/textures/stone.jpeg", scene);
+    materialWall.diffuseTexture.uScale = 40.0;
+    materialWall.diffuseTexture.vScale = 2;
+
+    var wallArena = BABYLON.Mesh.CreateBox("wall", 10, scene);
+    wallArena.scaling.x = 20;
+    wallArena.scaling.Y = 2;
+    wallArena.position = new BABYLON.Vector3(0 ,5, -105);
+    wallArena.material = materialWall;
+    walls.push(wallArena);
+
+    var wallArena2 = wallArena.clone("wall2");
+    wallArena2.position = new BABYLON.Vector3(105 ,5, 0);
+    wallArena2.rotation.y = (Math.PI*90)/180;
+    walls.push(wallArena2);
+
+    var wallArena3 = wallArena.clone("wall3");
+    wallArena3.position = new BABYLON.Vector3(-105 ,5, 0);
+    wallArena3.rotation.y = (Math.PI*90)/180;
+    walls.push(wallArena3);
+
+    var wallArena4 = wallArena.clone("wall4");
+    wallArena4.position = new BABYLON.Vector3(0 ,5, 105);
+    walls.push(wallArena4);
+
+    var wallcyl = BABYLON.Mesh.CreateCylinder("cyl1", 10, 20, 20, 20, 4, scene);
+    wallcyl.position = new BABYLON.Vector3(100, 5, 100);
+    wallcyl.material = materialWall;
+    walls.push(wallArena4);
+    var wallcyl2 = BABYLON.Mesh.CreateCylinder("cyl1", 10, 20, 20, 20, 4, scene);
+    wallcyl2.position = new BABYLON.Vector3(-100, 5, -100);
+    wallcyl2.material = materialWall;
+    walls.push(wallcyl2);
+    var wallcyl3 = BABYLON.Mesh.CreateCylinder("cyl1", 10, 20, 20, 20, 4, scene);
+    wallcyl3.position = new BABYLON.Vector3(100, 5, -100);
+    wallcyl3.material = materialWall;
+    walls.push(wallcyl3);
+    var wallcyl4 = BABYLON.Mesh.CreateCylinder("cyl1", 10, 20, 20, 20, 4, scene);
+    wallcyl4.position = new BABYLON.Vector3(-100, 5, 100);
+    wallcyl4.material = materialWall;
+    walls.push(wallcyl4);
+
+    walls.forEach(function(element) {
+      element.checkCollisions = true;
+      element.maxSimultaneousLights = 10;
+      //shadowGenerator1.getShadowMap().renderList.push(element);
+      element.receiveShadows = true;
+    });
+
+    /*
+    * Colonnes
+    */
+    var columns = [];
     var mainBox = BABYLON.Mesh.CreateBox("box1", 3, scene);
     mainBox.scaling.y = 1;
     mainBox.position = new BABYLON.Vector3(5,((3/2)*mainBox.scaling.y),5);
     mainBox.rotation.y = (Math.PI*45)/180;
-    mainBox.material = materialWall;
-    mainBox.checkCollisions = true;
+    mainBox.material = materialWood;
+    columns.push(mainBox);
 
-    // 3 clones de mainBox
     var mainBox2 = mainBox.clone("box2");
     mainBox2.scaling.y = 2;
     mainBox2.position = new BABYLON.Vector3(5,((3/2)*mainBox2.scaling.y),-5);
-
+    columns.push(mainBox2);
     var mainBox3 = mainBox.clone("box3");
     mainBox3.scaling.y = 3;
     mainBox3.position = new BABYLON.Vector3(-5,((3/2)*mainBox3.scaling.y),-5);
-
+    columns.push(mainBox3);
     var mainBox4 = mainBox.clone("box4");
     mainBox4.scaling.y = 4;
     mainBox4.position = new BABYLON.Vector3(-5,((3/2)*mainBox4.scaling.y),5);
+    columns.push(mainBox4);
 
-    // Ajoute des cylindes
+    columns.forEach(function(element) {
+      element.checkCollisions = true;
+      element.maxSimultaneousLights = 10;
+      shadowGenerator1.getShadowMap().renderList.push(element);
+      element.receiveShadows = true;
+    });
+
+    /*
+    * Pylones
+    */
+    var pylones = [];
+    var materialStone = new BABYLON.StandardMaterial("stonetexture", scene);
+    materialStone.diffuseTexture = new BABYLON.Texture("src/client/assets/textures/stone2.jpg", scene);
+    materialStone.diffuseTexture.uScale = 5.0;
+    materialStone.diffuseTexture.vScale = 5.0;
+
+    var mainCylinder = BABYLON.Mesh.CreateCylinder("cyl1", 30, 15, 20, 20, 4, scene);
+    mainCylinder.position = new BABYLON.Vector3(50, 15, 50);
+    mainCylinder.material = materialStone;
+    pylones.push(mainCylinder);
+
+    var cylinder2 = mainCylinder.clone("cyl2");
+    cylinder2.position = new BABYLON.Vector3(-50, 15, 50);
+    pylones.push(cylinder2);
+    var cylinder3 = mainCylinder.clone("cyl3");
+    cylinder3.position = new BABYLON.Vector3(50, 15, -50);
+    pylones.push(cylinder3);
+    var cylinder4 = mainCylinder.clone("cyl4");
+    cylinder4.position = new BABYLON.Vector3(-50, 15, -50);
+    pylones.push(cylinder4);
+
+    pylones.forEach(function(element) {
+      element.checkCollisions = true;
+      element.maxSimultaneousLights = 10;
+      shadowGenerator1.getShadowMap().renderList.push(element);
+      element.receiveShadows = true;
+    });
+
     var columns = [];
     var numberColumn = 6;
-    var sizeArena = 100 * ground.scaling.x -50;
+    var sizeArena = 200 -50;
     var ratio = ((100/numberColumn)/100) * sizeArena;
     for (var i = 0; i <= 1; i++) {
         if(numberColumn>0){
             columns[i] = [];
             let mainCylinder = BABYLON.Mesh.CreateCylinder("cyl0-"+i, 30, 5, 5, 20, 4, scene);
             mainCylinder.position = new BABYLON.Vector3(-sizeArena/2, 30/2, -20 + (40 * i));
-            mainCylinder.material = materialWall;
+            mainCylinder.material = materialWood;
             mainCylinder.checkCollisions = true;
 
             // La formule pour recevoir plus de lumières
@@ -123,6 +232,7 @@ Arena = function(game, props) {
             }
         }
     }
+
 
     // Liste des objets stockés dans le jeu
     this.bonusBox=[];
@@ -173,6 +283,7 @@ Arena = function(game, props) {
             this.ammosBox.push(newAmmoBox);
         }
     }
+    game.engine.hideLoadingUI();
 };
 
 Arena.prototype = {

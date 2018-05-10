@@ -12,7 +12,7 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
         ghostData.rotation.y,
         ghostData.rotation.z);
 
-    fakePlayer.playerBox = BABYLON.Mesh.CreateBox(ghostData.id, 5, this.game.scene);
+    fakePlayer.playerBox = BABYLON.Mesh.CreateBox(ghostData.id, 0, this.game.scene);
     fakePlayer.playerBox.scaling = new BABYLON.Vector3(0.5,1.2,0.5)
     fakePlayer.playerBox.position = positionSpawn;
     fakePlayer.playerBox.isPlayer = true;
@@ -23,17 +23,19 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
 
     fakePlayer.playerBox.checkCollisions = true;
     fakePlayer.playerBox.applyGravity = true;
-    fakePlayer.playerBox.ellipsoid = new BABYLON.Vector3(1.5, 1, 1.5);
+    //fakePlayer.playerBox.ellipsoid = new BABYLON.Vector3(1.5, 1, 1.5);
 
     fakePlayer.head = BABYLON.Mesh.CreateBox('headGhost', 2.2, this.game.scene);
     fakePlayer.head.parent = fakePlayer.playerBox;
     fakePlayer.head.scaling = new BABYLON.Vector3(2,0.8,2)
+    fakePlayer.head.isHead = true;
     fakePlayer.head.position.y+=1.6;
     fakePlayer.head.isPickable = false;
 
     fakePlayer.bodyChar = BABYLON.Mesh.CreateBox('bodyGhost', 2.2, this.game.scene);
     fakePlayer.bodyChar.parent = fakePlayer.playerBox;
     fakePlayer.bodyChar.scaling = new BABYLON.Vector3(2,0.8,2)
+    fakePlayer.bodyChar.isBody = true;
     fakePlayer.bodyChar.position.y-=0.6;
     fakePlayer.bodyChar.isPickable = false;
 

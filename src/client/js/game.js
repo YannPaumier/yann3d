@@ -4,6 +4,7 @@ Game = function(canvasId, playerConfig, props) {
     var canvas = document.getElementById(canvasId);
     var engine = new BABYLON.Engine(canvas, true);
     this.engine = engine;
+    //this.engine.displayLoadingUI();
 
     var _this = this;
     _this.actualTime = Date.now();
@@ -30,13 +31,16 @@ Game = function(canvasId, playerConfig, props) {
     // On lance la camera du jouer
     var _player = new Player(_this, canvas);
     this._PlayerData = _player;
-    
+
     // Les roquettes générées dans Player.js
     this._rockets = [];
     this._lasers = [];
 
     // Les explosions qui découlent des roquettes
     this._explosionRadius = [];
+
+    // On charge les fichier
+    this.headshotsound = new BABYLON.Sound("headshot", "/src/client/assets/sounds/headshot.mp3", this.scene);
 
     /*
     * Boucle du jeu
@@ -126,6 +130,7 @@ Game.prototype = {
         if(!meshFound || meshFound.distance < 10){
           // On vérifie qu'on a bien touché quelque chose
           if(meshFound.pickedMesh){
+            console.log(meshFound.pickedMesh)
               // On crée une sphere qui représentera la zone d'impact
               var explosionRadius = BABYLON.Mesh.CreateSphere("sphere", 5.0, 20, this.scene);
               // On positionne la sphère là où il y a eu impact
@@ -249,6 +254,16 @@ Game.prototype = {
             document.getElementById('scorePlayer'+indexName).innerText = room[i].score;
             indexName++;
         }
+    },
+
+    displayAnnouncement(arrayData){
+      if(arrayData[0] == "headshot");
+      {
+        this.headshotsound.play()
+        console.log(arrayData[0]);
+        console.log(arrayData[1]);
+        console.log(arrayData[2]);
+      }
     }
 };
 

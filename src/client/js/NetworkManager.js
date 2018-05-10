@@ -106,8 +106,8 @@ var sendGhostRocket = function(position, rotation, direction){
 var sendGhostLaser = function(position1, position2){
     socket.emit('newLaser',[position1, position2, personalRoomId]);
 }
-var sendDamages = function(damage,target){ // update all the ghosts with room data
-    socket.emit('distributeDamage',[damage, target, personalRoomId]);
+var sendDamages = function(damage, target, headshot){ // update all the ghosts with room datas
+    socket.emit('distributeDamage',[damage, target, personalRoomId, headshot]);
 }
 var sendPostMortem = function(whoKilledMe){ // update all the ghosts with room data
     if(!whoKilledMe){
@@ -200,4 +200,7 @@ var deleteGameGhost = function(game,deletedIndex){
  });
  socket.on ('recreateProps', function (createdProp) {
      game._ArenaData.recreatePropFromServer(createdProp)
+});
+socket.on ('announcement', function (arrayData) {
+    game.displayAnnouncement(arrayData);
 });

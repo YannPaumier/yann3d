@@ -402,11 +402,11 @@ Weapon.prototype = {
 
         var setupWeapon = this.Armory.weapons[idWeapon].setup;
 
-        if(meshFound.hit && meshFound.pickedMesh.isPlayer){
+        if(meshFound.hit && ( meshFound.pickedMesh.isBody || meshFound.pickedMesh.isHead )){
             // On a touché un joueur
             var damages = this.Armory.weapons[idWeapon].setup.damage;
             // On envoie les dégâts ainsi que l'ennemi trouvé grâce à son name
-            sendDamages(damages,meshFound.pickedMesh.name)
+            sendDamages(damages,meshFound.pickedMesh.parent.name)
         }else{
             // L'arme ne touche pas de joueur
             console.log('Not Hit Bullet')
@@ -421,9 +421,9 @@ Weapon.prototype = {
 
       if(meshFound.hit
         && meshFound.distance < setupWeapon.range*5
-        && meshFound.pickedMesh.isPlayer){
+        && ( meshFound.pickedMesh.isBody || meshFound.pickedMesh.isHead )){
           var damages = this.Armory.weapons[idWeapon].setup.damage;
-          sendDamages(damages,meshFound.pickedMesh.name)
+          sendDamages(damages,meshFound.pickedMesh.parent.name)
       }else{
           // L'arme frappe dans le vide
           console.log('Not Hit CaC')
@@ -454,10 +454,16 @@ Weapon.prototype = {
           line.isPickable = false;
           line.edgesWidth = 40.0;
           line.edgesColor = new BABYLON.Color4(colorLine.r, colorLine.g, colorLine.b, 1);
-          if(meshFound.pickedMesh.isPlayer){
+          console.log(meshFound.pickedMesh.parent)
+          if( meshFound.pickedMesh.isBody){
               // On inflige des dégâts au joueur
               var damages = this.Armory.weapons[idWeapon].setup.damage;
-              sendDamages(damages,meshFound.pickedMesh.name)
+              sendDamages(damages,meshFound.pickedMesh.parent.name)
+          }
+          if(meshFound.pickedMesh.isHead){
+              // On inflige des dégâts au joueur
+              var damages = this.Armory.weapons[idWeapon].setup.damage;
+              sendDamages(damages * 1.5 ,meshFound.pickedMesh.parent.name, true)
           }
 
           // On envoie le point de départ et le point d'arrivée
