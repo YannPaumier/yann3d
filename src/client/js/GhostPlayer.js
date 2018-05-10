@@ -30,14 +30,14 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
     fakePlayer.head.scaling = new BABYLON.Vector3(2,0.8,2)
     fakePlayer.head.isHead = true;
     fakePlayer.head.position.y+=1.6;
-    fakePlayer.head.isPickable = false;
+    fakePlayer.head.isPickable = true;
 
     fakePlayer.bodyChar = BABYLON.Mesh.CreateBox('bodyGhost', 2.2, this.game.scene);
     fakePlayer.bodyChar.parent = fakePlayer.playerBox;
     fakePlayer.bodyChar.scaling = new BABYLON.Vector3(2,0.8,2)
     fakePlayer.bodyChar.isBody = true;
     fakePlayer.bodyChar.position.y-=0.6;
-    fakePlayer.bodyChar.isPickable = false;
+    fakePlayer.bodyChar.isPickable = true;
 
     // Les datas de vie et d'armure du joueur
     fakePlayer.health = ghostData.life;

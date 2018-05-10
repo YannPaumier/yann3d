@@ -130,7 +130,6 @@ Game.prototype = {
         if(!meshFound || meshFound.distance < 10){
           // On vérifie qu'on a bien touché quelque chose
           if(meshFound.pickedMesh){
-            console.log(meshFound.pickedMesh)
               // On crée une sphere qui représentera la zone d'impact
               var explosionRadius = BABYLON.Mesh.CreateSphere("sphere", 5.0, 20, this.scene);
               // On positionne la sphère là où il y a eu impact
@@ -146,6 +145,9 @@ Game.prototype = {
               // Vérifier si l'explosion à touché un joueur
               // Calcule la matrice de l'objet pour les collisions
               explosionRadius.computeWorldMatrix(true);
+              console.log(meshFound.pickedMesh)
+              console.log(this._PlayerData.camera.playerBox)
+              console.log(explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox))
               if (this._PlayerData.isAlive && this._PlayerData.camera.playerBox && explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox)) {
                   // Envoi à la fonction d'affectation des dégâts
                   console.log('hit');
