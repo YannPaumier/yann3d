@@ -53,7 +53,7 @@ Player.prototype = {
         this.spawnPoint = this.game.allSpawnPoints[randomPoint];
 
         // On cré la box du player
-        var playerBox = BABYLON.Mesh.CreateBox("hitBoxPlayer", 2.2, scene);
+        var playerBox = BABYLON.Mesh.CreateBox("playerBox", 2.2, scene);
         //playerBox.scaling = new BABYLON.Vector3(2, 0.8, 2)
         playerBox.position = this.spawnPoint.clone();
         //playerBox.ellipsoid = new BABYLON.Vector3(2, 1.6, 2);
@@ -256,7 +256,7 @@ Player.prototype = {
                 // On regarde quel est le premier objet qu'on touche
                 // On exclut tous les meshes qui appartiennent au joueur
                 var distPlayer = this.game.scene.pickWithRay(rayPlayer, function (item) {
-                    if (item.name == "hitBoxPlayer" || item.id == "headMainPlayer" || item.id == "bodyGhost" || item.isPlayer)
+                    if (item.name == "playerBox" || item.id == "headMainPlayer" || item.id == "bodyGhost" || item.isPlayer)
                         return false;
                     else
                         return true;

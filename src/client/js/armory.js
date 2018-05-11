@@ -55,7 +55,7 @@ Armory = function(game, player) {
                     // 'meshAmmosUrl' : '',
                     'meshAmmosName' : 'Rockets',
                     // Rapidité de déplacement de la roquette
-                    'rocketSpeed' : 0.1,
+                    'rocketSpeed' : 0.5,
                     // Taille de la roquette
                     'rocketSize' : 1,
                     // Rayon de l'explosion

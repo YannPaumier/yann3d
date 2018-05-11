@@ -321,7 +321,7 @@ Weapon.prototype = {
 
       // Cast un rayon au centre de l'écran
       var direction = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2, function(item) {
-        if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitBoxPlayer")
+        if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitHeadPlayer")
             return false;
         else
             return true;
@@ -334,7 +334,7 @@ Weapon.prototype = {
                 direction = direction.pickedPoint.subtractInPlace(_this.Player.camera.playerBox.position);
                 direction = direction.normalize();
 
-                _this.createRocket(_this.Player.camera.playerBox, direction)
+                _this.createRocket(_this.Player.camera.headPlayer, direction)
             }else if(_this.Armory.weapons[idWeapon].setup.ammos.type === 'bullet'){
                 // Nous devons tirer des balles simples
                 this.shootBullet(direction)
@@ -354,7 +354,7 @@ Weapon.prototype = {
       }
     },
 
-  createRocket : function(playerPosition, direction) {
+  createRocket : function(headPlayerPosition, direction) {
       _this = this;
 
       // Permet de connaitre l'id de l'arme dans Armory.js
@@ -365,7 +365,7 @@ Weapon.prototype = {
 
       var positionValue = this.inventory[this.actualWeapon].absolutePosition.clone();
 
-      var rotationValue = playerPosition.rotation;
+      var rotationValue = headPlayerPosition.rotation;
       var newRocket = BABYLON.Mesh.CreateBox("rocket", 0.5, this.Player.scene);
 
       newRocket.direction = direction;
