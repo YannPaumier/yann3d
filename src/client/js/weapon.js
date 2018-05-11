@@ -319,7 +319,7 @@ Weapon.prototype = {
       var renderWidth = _this.Player.game.engine.getRenderWidth(true);
       var renderHeight = _this.Player.game.engine.getRenderHeight(true);
 
-      // Cast un rayon au centre de l'écran
+      // Cast un rayon au centre de l'écran, on ignore quelques items
       var direction = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2, function(item) {
         if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitHeadPlayer")
             return false;

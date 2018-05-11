@@ -64,7 +64,7 @@ Player.prototype = {
         //headPlayer.scaling = new BABYLON.Vector3(2, 0.8, 2)
         headPlayer.position.y += 2.6;
         headPlayer.isPickable = true;
-        headPlayer.isMain = true;
+        //headPlayer.isMain = true;
         headPlayer.parent = playerBox;
 
         // On crée la caméra
@@ -650,9 +650,9 @@ Player.prototype = {
                     ghostPlayers[i].axisMovement = data.axisMovement;
                 }
                 if(data.rotation){
-                  console.log("rotation : " );
-                  console.log(data.rotation);
-                  console.log(ghostPlayers[i].head);
+                  //console.log("rotation : " );
+                  //console.log(data.rotation);
+                  //console.log(ghostPlayers[i].head);
                     ghostPlayers[i].head.rotation.y = data.rotation.y;
                 }
                 if(data.jumpNeed){

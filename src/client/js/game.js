@@ -123,10 +123,28 @@ Game.prototype = {
         // On crée un rayon qui part de la base de la roquette vers l'avant
         var rayRocket = new BABYLON.Ray(this._rockets[i].position, this._rockets[i].direction);
 
+
         // On regarde quel est le premier objet qu'on touche
-        var meshFound = this._rockets[i].getScene().pickWithRay(rayRocket);
-        //console.log("meshfound")
-        //console.log(meshFound);
+        var meshFound = this._rockets[i].getScene().pickWithRay(rayRocket, null, false);
+
+        // TEST FOR DEBUGG
+        console.log(meshFound);
+        console.log("rocket position : ");
+        console.log(this._rockets[i].position);
+        console.log("rocket direction : ");
+        console.log(this._rockets[i].direction)
+        console.log("meshfound : ");
+        console.log(meshFound.pickedPoint);
+
+
+        let line = BABYLON.Mesh.CreateLines("lines", [
+                    this._rockets[i].position,
+                    meshFound.pickedPoint
+                ], this.scene);
+        var colorLine = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+        line.color = colorLine;
+
+
         // Si la distance au premier objet touché est inférieure a 10, on détruit la roquette
         if(!meshFound || meshFound.distance < 10){
           // On vérifie qu'on a bien touché quelque chose
@@ -147,8 +165,8 @@ Game.prototype = {
               // Calcule la matrice de l'objet pour les collisions
               explosionRadius.computeWorldMatrix(true);
 
-            //  console.log(explosionRadius)
-            //  console.log(explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox))
+              //console.log(explosionRadius)
+              //console.log(explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox))
               if (this._PlayerData.isAlive && this._PlayerData.camera.playerBox && ( explosionRadius.intersectsMesh(this._PlayerData.camera.headPlayer) ||  explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox) )) {
                   // Envoi à la fonction d'affectation des dégâts
                   console.log('hit');
