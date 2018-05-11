@@ -28,7 +28,7 @@ Player = function(game, canvas) {
     this._initCamera(this.scene, canvas);
 
     // Initisalisation des graphisme
-    this._initGraphism(this.scene, this.camera);
+    //this._initGraphism(this.scene, this.camera);
 
     // Le joueur doit cliquer dans la scène pour que controlEnabled soit changé
     this.controlEnabled = false;

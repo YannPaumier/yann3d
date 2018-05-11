@@ -12,6 +12,12 @@ Game = function(canvasId, playerConfig, props) {
     // On initie la scène avec une fonction associé à l'objet Game
     this.scene = this._initScene(engine);
 
+    //Opti de la scene
+    var options = new BABYLON.SceneOptimizerOptions();
+    options.addOptimization(new BABYLON.HardwareScalingOptimization(0, 1));
+    // Optimizer
+    var optimizer = new BABYLON.SceneOptimizer(this.scene, options);
+
     // Set de l'armurerie
     var armory = new Armory(this);
     _this.armory = armory;
