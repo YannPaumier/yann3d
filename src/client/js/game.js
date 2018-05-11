@@ -125,7 +125,8 @@ Game.prototype = {
 
         // On regarde quel est le premier objet qu'on touche
         var meshFound = this._rockets[i].getScene().pickWithRay(rayRocket);
-
+        console.log("meshfound")
+        console.log(meshFound);
         // Si la distance au premier objet touché est inférieure a 10, on détruit la roquette
         if(!meshFound || meshFound.distance < 10){
           // On vérifie qu'on a bien touché quelque chose
@@ -145,8 +146,8 @@ Game.prototype = {
               // Vérifier si l'explosion à touché un joueur
               // Calcule la matrice de l'objet pour les collisions
               explosionRadius.computeWorldMatrix(true);
-              console.log(meshFound.pickedMesh)
-              console.log(this._PlayerData.camera.playerBox)
+
+              console.log(explosionRadius)
               console.log(explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox))
               if (this._PlayerData.isAlive && this._PlayerData.camera.playerBox && explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox)) {
                   // Envoi à la fonction d'affectation des dégâts

@@ -53,17 +53,29 @@ Player.prototype = {
         this.spawnPoint = this.game.allSpawnPoints[randomPoint];
 
         // On cré la box du player
-        var playerBox = BABYLON.Mesh.CreateBox("headMainPlayer", 1, scene);
+        var playerBox = BABYLON.Mesh.CreateBox("hitBoxPlayer", 2.2, scene);
+        //playerBox.scaling = new BABYLON.Vector3(2, 0.8, 2)
         playerBox.position = this.spawnPoint.clone();
-        playerBox.ellipsoid = new BABYLON.Vector3(2, 2, 2);
+        //playerBox.ellipsoid = new BABYLON.Vector3(2, 1.6, 2);
+        playerBox.isPickable = true;
+
+
+        var headPlayer = BABYLON.Mesh.CreateBox("hitHeadPlayer", 2.2, scene);
+        //headPlayer.scaling = new BABYLON.Vector3(2, 0.8, 2)
+        headPlayer.position.y += 2.6;
+        headPlayer.isPickable = true;
+        headPlayer.isMain = true;
+        headPlayer.parent = playerBox;
 
         // On crée la caméra
         this.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, 0), scene);
+        //this.camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/2, Math.PI/4, 10, new BABYLON.Vector3(0, 0, 0), scene);
         // On réinitialise la position de la caméra
         this.camera.setTarget(BABYLON.Vector3.Zero());
         this.game.scene.activeCamera = this.camera;
-        this.camera.playerBox = playerBox
-        this.camera.parent = this.camera.playerBox;
+        this.camera.playerBox = playerBox;
+        this.camera.headPlayer = headPlayer;
+        this.camera.parent = headPlayer;
 
         // Ajout des collisions avec playerBox
         this.camera.playerBox.checkCollisions = true;
@@ -91,12 +103,6 @@ Player.prototype = {
 
         // Appel de la création des armes
         this.camera.weapons = new Weapon(this);
-
-        var hitBoxPlayer = BABYLON.Mesh.CreateBox("hitBoxPlayer", 3, scene);
-        hitBoxPlayer.parent = this.camera.playerBox;
-        hitBoxPlayer.scaling.y = 2;
-        hitBoxPlayer.isPickable = true;
-        hitBoxPlayer.isMain = true;
 
     },
 
@@ -178,7 +184,7 @@ Player.prototype = {
     // Déplace tous les joueurs
     _checkMove : function(ratioFps){
         // On bouge le player en lui attribuant la caméra
-        this._checkUniqueMove(ratioFps,this.camera);
+        this._checkUniqueMove(ratioFps, this.camera);
         for (var i = 0; i < this.ghostPlayers.length; i++) {
             // On bouge chaque ghost présent dans ghostPlayers
             this._checkUniqueMove(ratioFps, this.ghostPlayers[i]);
@@ -194,7 +200,7 @@ Player.prototype = {
             if(playerSelected.head){
                 var rotationPoint = playerSelected.head.rotation;
             }else{
-                var rotationPoint = playerSelected.playerBox.rotation;
+                var rotationPoint = playerSelected.headPlayer.rotation;
             }
             if(playerSelected.axisMovement[0]){
               forward = new BABYLON.Vector3(
@@ -228,6 +234,8 @@ Player.prototype = {
               );
               playerSelected.playerBox.moveWithCollisions(right);
             }
+
+            // Gestion du saut
             if(playerSelected.jumpNeed){
                 // Lerp
                 percentMove = playerSelected.jumpNeed - playerSelected.playerBox.position.y;
@@ -334,10 +342,10 @@ Player.prototype = {
 
        window.addEventListener("mousemove", function(evt) {
         if(_this.rotEngaged === true){
-            _this.camera.playerBox.rotation.y += evt.movementX * 0.001 * (_this.angularSensibility / 250);
-            var nextRotationX = _this.camera.playerBox.rotation.x + (evt.movementY * 0.001 * (_this.angularSensibility / 250));
+            _this.camera.headPlayer.rotation.y += evt.movementX * 0.001 * (_this.angularSensibility / 250);
+            var nextRotationX = _this.camera.headPlayer.rotation.x + (evt.movementY * 0.001 * (_this.angularSensibility / 250));
             if( nextRotationX < degToRad(90) && nextRotationX > degToRad(-90)){
-                _this.camera.playerBox.rotation.x += evt.movementY * 0.001 * (_this.angularSensibility / 250);
+                _this.camera.headPlayer.rotation.x += evt.movementY * 0.001 * (_this.angularSensibility / 250);
             }
          }
 
@@ -642,6 +650,9 @@ Player.prototype = {
                     ghostPlayers[i].axisMovement = data.axisMovement;
                 }
                 if(data.rotation){
+                  console.log("rotation : " );
+                  console.log(data.rotation);
+                  console.log(ghostPlayers[i].head);
                     ghostPlayers[i].head.rotation.y = data.rotation.y;
                 }
                 if(data.jumpNeed){

@@ -389,7 +389,7 @@ Weapon.prototype = {
       newRocket.paramsRocket = this.Armory.weapons[idWeapon].setup;
 
       // On a besoin de la position, la rotation et la direction
-      sendGhostRocket(newRocket.position,newRocket.rotation,newRocket.direction);
+      sendGhostRocket(newRocket.position, newRocket.rotation, newRocket.direction);
 
       // Ajout de la rocket dans le tableau de rocket
       this.Player.game._rockets.push(newRocket);
