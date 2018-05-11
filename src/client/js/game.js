@@ -128,6 +128,7 @@ Game.prototype = {
         var meshFound = this._rockets[i].getScene().pickWithRay(rayRocket, null, false);
 
         // TEST FOR DEBUGG
+        /*
         console.log(meshFound);
         console.log("rocket position : ");
         console.log(this._rockets[i].position);
@@ -143,7 +144,7 @@ Game.prototype = {
                 ], this.scene);
         var colorLine = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
         line.color = colorLine;
-
+        */
 
         // Si la distance au premier objet touché est inférieure a 10, on détruit la roquette
         if(!meshFound || meshFound.distance < 10){
