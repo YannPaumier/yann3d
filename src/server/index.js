@@ -73,11 +73,17 @@ var namesList = [
     "X-ray",
     "Yankee",
     "Zulu"];
-var spawnPointsList = [
-{x:-20, y:15, z:0},
-{x:0, y:15, z:0},
-{x:20, y:15, z:0},
-{x:40, y:15, z:0}
+var spawnPointsListA = [
+{x:-20, y:1, z:0},
+{x:0, y:1, z:0},
+{x:20, y:1, z:0},
+{x:40, y:1, z:0}
+];
+var spawnPointsListB = [
+{x:-20, y:1, z:0},
+{x:0, y:1, z:0},
+{x:20, y:1, z:0},
+{x:40, y:1, z:0}
 ];
 
 var bonusBoxes = [
@@ -125,6 +131,7 @@ var tempUser = {
     actualTypeWeapon: 1,
     axisMovement: [false,false,false,false],
     rotation: {x:0, y:0, z:0},
+    headRotation: {x:0, y:0, z:0},
     score: 0
 };
 room.push(tempUser);
@@ -188,7 +195,7 @@ socket.on('ressurectPlayer', function(idPlayer) {
 socket.on('updateData', function(arrayData) {
     var idPlayer = arrayData[1];
     var data = arrayData[0];
-    for(var i=0;i<room.length;i++){
+    for(var i=0; i < room.length; i++){
         if(room[i].id === idPlayer){
             var datasend = {};
             if(data.position){
@@ -207,6 +214,12 @@ socket.on('updateData', function(arrayData) {
                 room[i].rotation.y = data.rotation.y;
                 room[i].rotation.z = data.rotation.z;
                 datasend.rotation = room[i].rotation;
+            }
+            if(data.headRotation){
+              room[i].headRotation.x = data.headRotation.x;
+              room[i].headRotation.y = data.headRotation.y;
+              room[i].headRotation.z = data.headRotation.z;
+              datasend.headRotation = room[i].headRotation;
             }
             if(data.armor){
                 room[i].armor = data.armor;
@@ -263,7 +276,24 @@ return namesList[(countUsers % namesList.length)] + (countUsers/namesList.length
 }
 
 var getSpawnPoint = function(){
-return spawnPointsList[countUsers % spawnPointsList.length];
+  var pair = false;
+  if (countUsers%2 == 0)
+     pair = true;
+  else{
+      pair = false;
+  }
+
+  // Math.random nous donne un nombre entre 0 et 1
+  let randomPoint = Math.random();
+  // randomPoint fait un arrondi de ce chiffre et du nombre de spawnPoints
+  randomPoint = Math.round(randomPoint * (spawnPointsListA.length - 1));
+
+  if(pair){
+    return spawnPointsListA[randomPoint];
+  }else{
+    return spawnPointsListB[randomPoint];
+  }
+
 }
 
 var getTopFive = function(room){

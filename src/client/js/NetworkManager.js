@@ -89,11 +89,11 @@ var checkIfGhostDisconnect = function(room){ // check if it miss a ghost in room
 }
 var createGhost = function(ghost, id){ // create a new ghost
     myRoom.push(ghost);
-    newGhostPlayer = GhostPlayer(game, ghost, id);
+    newGhostPlayer = new GhostPlayer(game, ghost, id);
     game._PlayerData.ghostPlayers.push(newGhostPlayer);
 }
 var updateGhost = function(data){ // update all the ghosts with room data
-    socket.emit('updateData',[data,personalRoomId]);
+    socket.emit('updateData',[data, personalRoomId]);
 }
 var deleteGhost = function(index,position){ // delete the ghost by the index
     deleteGameGhost(game,index);
@@ -133,7 +133,6 @@ var deleteGameGhost = function(game,deletedIndex){
         if(ghostPlayers[i].idRoom === deletedIndex){
             ghostPlayers[i].playerBox.dispose();
             ghostPlayers[i].head.dispose();
-            ghostPlayers[i].bodyChar.dispose();
             ghostPlayers[i] = false;
 
             ghostPlayers.splice(i,1);
@@ -143,15 +142,15 @@ var deleteGameGhost = function(game,deletedIndex){
 }
 // ================================================
  socket.on('requestPosition', function(room){
-     var dataToSend = [game._PlayerData.sendActualData(),personalRoomId];
-     socket.emit('updateData',dataToSend);
+     var dataToSend = [game._PlayerData.sendActualData(), personalRoomId];
+     socket.emit('updateData', dataToSend);
 });
 
 // MET A JOUR LES GHOSTS
  socket.on ('updatePlayer', function (arrayData) {
      if(arrayData.id != personalRoomId){
          if(arrayData.ghostCreationNeeded){
-             var newGhostPlayer = GhostPlayer(game,arrayData,arrayData.id);
+             var newGhostPlayer = new GhostPlayer(game, arrayData, arrayData.id);
              game._PlayerData.ghostPlayers.push(newGhostPlayer);
          }else{
              game._PlayerData.updateLocalGhost(arrayData);

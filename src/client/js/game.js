@@ -12,6 +12,9 @@ Game = function(canvasId, playerConfig, props) {
     // On initie la scène avec une fonction associé à l'objet Game
     this.scene = this._initScene(engine);
 
+    //Dev mod
+    //this.scene.debugLayer.show();
+
     //Opti de la scene
     var options = new BABYLON.SceneOptimizerOptions();
     options.addOptimization(new BABYLON.HardwareScalingOptimization(0, 1));
@@ -22,13 +25,7 @@ Game = function(canvasId, playerConfig, props) {
     var armory = new Armory(this);
     _this.armory = armory;
 
-    this.allSpawnPoints = [
-    new BABYLON.Vector3(-90, 5, -90),
-    new BABYLON.Vector3(-30, 5, -90),
-    new BABYLON.Vector3(30, 5, -90),
-    new BABYLON.Vector3(90, 5, -90)
-    ];
-
+    this.playerTempPosition = playerConfig.position;
 
     // On lance la scene (lumières, meshes.. ) et les props
     var _arena = new Arena(_this, props);
@@ -63,7 +60,7 @@ Game = function(canvasId, playerConfig, props) {
 
       // On apelle nos deux fonctions de calcul pour les roquettes
       _this.renderRockets();
-      _this.renderExplosionRadius();
+      //_this.renderExplosionRadius();
       // On calcule les animations des armes
       _this.renderWeapons();
 
@@ -154,6 +151,7 @@ Game.prototype = {
 
         // Si la distance au premier objet touché est inférieure a 10, on détruit la roquette
         if(!meshFound || meshFound.distance < 10){
+
           // On vérifie qu'on a bien touché quelque chose
           if(meshFound.pickedMesh){
               // On crée une sphere qui représentera la zone d'impact
@@ -174,7 +172,8 @@ Game.prototype = {
 
               //console.log(explosionRadius)
               //console.log(explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox))
-              if (this._PlayerData.isAlive && this._PlayerData.camera.playerBox && ( explosionRadius.intersectsMesh(this._PlayerData.camera.headPlayer) ||  explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox) )) {
+
+              if (this._PlayerData.isAlive && this._PlayerData.camera.playerBox && ( explosionRadius.intersectsMesh(this._PlayerData.camera.headPlayer) ||  explosionRadius.intersectsMesh(this._PlayerData.camera.playerBox)) ) {
                   // Envoi à la fonction d'affectation des dégâts
                   console.log('hit');
                   // Envoi à la fonction d'affectation des dégâts
@@ -185,8 +184,8 @@ Game.prototype = {
                   }
                   this._PlayerData.getDamage(paramsRocket.damage,whoDamage);
               }
-              // On envoi l'explostion dans le tableau
-              this._explosionRadius.push(explosionRadius);
+            // On reduit l'explossion
+            this.renderExplosionRadius(explosionRadius);
           }
             this._rockets[i].dispose();
             // On enlève de l'array _rockets le mesh numéro i (défini par la boucle)
@@ -197,6 +196,19 @@ Game.prototype = {
         }
       };
     },
+
+    renderExplosionRadius : function (explosionRadius) {
+      setTimeout( () => {
+          explosionRadius.scaling.x -= 0.02;
+          explosionRadius.scaling.y -= 0.02;
+          explosionRadius.scaling.z -= 0.02;
+          if (explosionRadius.scaling.x >= 0.3) {
+             this.renderExplosionRadius(explosionRadius);
+          }else{
+            explosionRadius.dispose()
+          }
+       }, 40)
+     },
 
     createGhostRocket : function(dataRocket) {
           var positionRocket = dataRocket[0];
@@ -243,19 +255,6 @@ Game.prototype = {
         line.edgesWidth = 40.0;
         line.edgesColor = new BABYLON.Color4(colorLine.r, colorLine.g, colorLine.b, 1);
         this._lasers.push(line);
-    },
-
-    renderExplosionRadius : function() {
-      if(this._explosionRadius.length > 0){
-       for (var i = 0; i < this._explosionRadius.length; i++) {
-         // Chaque frame, on baisse l'opacité et on efface l'objet quand l'alpha est arrivé à 0
-           this._explosionRadius[i].material.alpha -= 0.02;
-           if(this._explosionRadius[i].material.alpha<=0){
-               this._explosionRadius[i].dispose();
-               this._explosionRadius.splice(i, 1);
-           }
-       }
-     }
     },
 
     renderLaser : function() {

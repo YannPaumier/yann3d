@@ -8,6 +8,7 @@ Arena = function(game, props) {
     /*
     * Création du background
     */
+    /*
     var skybox = BABYLON.Mesh.CreateBox("skyBox", 400.0, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
@@ -18,14 +19,16 @@ Arena = function(game, props) {
     skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("src/client/assets/textures/sky4/sky4", scene);
     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skybox.renderingGroupId = 0;
+    */
 
     /*
     * Gestion des lumières
     */
     // Création de notre lumière principale
-    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 10, 0), scene);
     light.intensity = 0.8;
-
+    var light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, -1, 0), scene);
+    light2.intensity = 0.8;
     // Création des lumières pour les ombres
     var light3 = new BABYLON.PointLight("Spot0", new BABYLON.Vector3(-300, 200, -120), scene);
     light3.intensity = 3;
@@ -43,6 +46,7 @@ Arena = function(game, props) {
     * Ground
     */
     // Initialisation d'un materiel pour le mesh ground
+/*
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
   	groundMaterial.diffuseTexture = new BABYLON.Texture("src/client/assets/textures/ground3.jpg", scene);
   	groundMaterial.diffuseTexture.uScale = 15;
@@ -56,13 +60,21 @@ Arena = function(game, props) {
     // Activer la reception des ombres
     ground.receiveShadows = true;
     ground.checkCollisions = true;
-
+*/
     /*
     * Box arene
     */
-    var boxArena = BABYLON.Mesh.CreateBox("arena", 200, scene, false, BABYLON.Mesh.BACKSIDE);
-    var materialBox = new BABYLON.StandardMaterial("wallexture", scene);
-    materialBox.alpha = 0;
+    var boxArena = BABYLON.Mesh.CreateBox("arena", 100, scene, false, BABYLON.Mesh.BACKSIDE);
+    boxArena.position.y = 50 * 0.3;
+    boxArena.scaling.y = 0.3;
+    boxArena.scaling.z = 0.8;
+    boxArena.scaling.x = 3.5;
+    var materialBox = new BABYLON.StandardMaterial("tile", scene);
+    materialBox.diffuseTexture = new BABYLON.Texture("src/client/assets/images/tile.jpg", scene);
+    materialBox.diffuseTexture.uScale = 8.0;
+    materialBox.diffuseTexture.vScale = 8.0;
+
+    //materialBox.alpha = 0;
     boxArena.material = materialBox;
     boxArena.checkCollisions = true;
 
@@ -83,6 +95,7 @@ Arena = function(game, props) {
     /*
     * Murs
     */
+    /*
     var walls = [];
     var materialWall = new BABYLON.StandardMaterial("walltexture", scene);
     materialWall.diffuseTexture = new BABYLON.Texture("src/client/assets/textures/stone.jpeg", scene);
@@ -133,10 +146,11 @@ Arena = function(game, props) {
       //shadowGenerator1.getShadowMap().renderList.push(element);
       element.receiveShadows = true;
     });
-
+    */
     /*
     * Colonnes
     */
+    /*
     var columns = [];
     var mainBox = BABYLON.Mesh.CreateBox("box1", 3, scene);
     mainBox.scaling.y = 1;
@@ -164,10 +178,11 @@ Arena = function(game, props) {
       shadowGenerator1.getShadowMap().renderList.push(element);
       element.receiveShadows = true;
     });
-
+    */
     /*
     * Pylones
     */
+    /*
     var pylones = [];
     var materialStone = new BABYLON.StandardMaterial("stonetexture", scene);
     materialStone.diffuseTexture = new BABYLON.Texture("src/client/assets/textures/stone2.jpg", scene);
@@ -195,7 +210,7 @@ Arena = function(game, props) {
       shadowGenerator1.getShadowMap().renderList.push(element);
       element.receiveShadows = true;
     });
-
+    */
     var columns = [];
     var numberColumn = 6;
     var sizeArena = 200 -50;
@@ -205,7 +220,7 @@ Arena = function(game, props) {
             columns[i] = [];
             let mainCylinder = BABYLON.Mesh.CreateCylinder("cyl0-"+i, 30, 5, 5, 20, 4, scene);
             mainCylinder.position = new BABYLON.Vector3(-sizeArena/2, 30/2, -20 + (40 * i));
-            mainCylinder.material = materialWood;
+            mainCylinder.material = materialBox;
             mainCylinder.checkCollisions = true;
 
             // La formule pour recevoir plus de lumières

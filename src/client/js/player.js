@@ -46,25 +46,18 @@ Player.prototype = {
         // Math.random nous donne un nombre entre 0 et 1
         let randomPoint = Math.random();
 
-        // randomPoint fait un arrondi de ce chiffre et du nombre de spawnPoints
-        randomPoint = Math.round(randomPoint * (this.game.allSpawnPoints.length - 1));
-
-        // On dit que le spawnPoint est celui choisi selon le random plus haut
-        this.spawnPoint = this.game.allSpawnPoints[randomPoint];
+        let spawnPoint = this.game.playerTempPosition;
 
         // On cré la box du player
         var playerBox = BABYLON.Mesh.CreateBox("playerBox", 2.2, scene);
         //playerBox.scaling = new BABYLON.Vector3(2, 0.8, 2)
-        playerBox.position = this.spawnPoint.clone();
         //playerBox.ellipsoid = new BABYLON.Vector3(2, 1.6, 2);
+        playerBox.position = new BABYLON.Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z);
         playerBox.isPickable = true;
 
-
         var headPlayer = BABYLON.Mesh.CreateBox("hitHeadPlayer", 2.2, scene);
-        //headPlayer.scaling = new BABYLON.Vector3(2, 0.8, 2)
         headPlayer.position.y += 2.6;
         headPlayer.isPickable = true;
-        //headPlayer.isMain = true;
         headPlayer.parent = playerBox;
 
         // On crée la caméra
@@ -193,8 +186,13 @@ Player.prototype = {
 
     // Vérifie chaque joeur présent dans la scene
   _checkUniqueMove : function(ratioFps, player) {
-        let relativeSpeed = this.speed / ratioFps;
-        var playerSelected = player
+        var relativeSpeed = this.speed / ratioFps;
+        var playerSelected = player;
+
+        // Gestiond es angles
+        if(( playerSelected.axisMovement[0] ||  playerSelected.axisMovement[1]) && ( playerSelected.axisMovement[2] || playerSelected.axisMovement[3] )){
+          relativeSpeed = relativeSpeed / 1.5;
+        }
 
         if(playerSelected.axisMovement){
             if(playerSelected.head){
@@ -256,7 +254,7 @@ Player.prototype = {
                 // On regarde quel est le premier objet qu'on touche
                 // On exclut tous les meshes qui appartiennent au joueur
                 var distPlayer = this.game.scene.pickWithRay(rayPlayer, function (item) {
-                    if (item.name == "playerBox" || item.id == "headMainPlayer" || item.id == "bodyGhost" || item.isPlayer)
+                    if (item.name == "playerBox" || item.id == "headMainPlayer" || item.id == "ghostBox" || item.id == "headGhost" || item.isPlayer)
                         return false;
                     else
                         return true;
@@ -351,7 +349,7 @@ Player.prototype = {
 
          // Send to server
          var data={
-            rotation : _this.camera.playerBox.rotation
+            headRotation : _this.camera.headPlayer.rotation
         };
         _this.sendNewData(data)
 
@@ -625,6 +623,7 @@ Player.prototype = {
           life : this.camera.health,
           position  : this.camera.playerBox.position,
           rotation : this.camera.playerBox.rotation,
+          headRotation : this.camera.headPlayer.rotation,
           axisMovement : this.camera.axisMovement
       }
     },
@@ -644,16 +643,28 @@ Player.prototype = {
                 var boxModified = ghostPlayers[i].playerBox;
                 // On applique un correctif sur Y, qui semble être au mauvais endroit
                 if(data.position){
-                    boxModified.position = new BABYLON.Vector3(data.position.x,data.position.y-2.76,data.position.z);
+                    boxModified.position = new BABYLON.Vector3(data.position.x, data.position.y, data.position.z);
                 }
                 if(data.axisMovement){
                     ghostPlayers[i].axisMovement = data.axisMovement;
                 }
+                /*
                 if(data.rotation){
                   //console.log("rotation : " );
                   //console.log(data.rotation);
                   //console.log(ghostPlayers[i].head);
-                    ghostPlayers[i].head.rotation.y = data.rotation.y;
+                    ghostPlayers[i].playerBox.rotation.y = data.rotation.y;
+                    ghostPlayers[i].playerBox.rotation.x = data.rotation.x;
+                    ghostPlayers[i].playerBox.rotation.z = data.rotation.z;
+                }
+                */
+                if(data.headRotation){
+                  //console.log("rotation : " );
+                  //console.log(data.rotation);
+                  //console.log(ghostPlayers[i].head);
+                    ghostPlayers[i].head.rotation.y = data.headRotation.y;
+                    ghostPlayers[i].head.rotation.x = data.headRotation.x;
+                    ghostPlayers[i].head.rotation.z = data.headRotation.z;
                 }
                 if(data.jumpNeed){
                     ghostPlayers[i].jumpNeed = data.jumpNeed;

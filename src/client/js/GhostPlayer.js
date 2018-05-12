@@ -4,41 +4,43 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
     var fakePlayer = {};
 
     // On donne à notre ghost une rotation et position envoyées par le serveur.
-    var positionSpawn = new BABYLON.Vector3(ghostData.position.x,
+    var positionSpawn = new BABYLON.Vector3(
+        ghostData.position.x,
         ghostData.position.y,
         ghostData.position.z);
 
-    var rotationSpawn = new BABYLON.Vector3(ghostData.rotation.x,
+    var rotationSpawn = new BABYLON.Vector3(
+        ghostData.rotation.x,
         ghostData.rotation.y,
         ghostData.rotation.z);
 
 
-    fakePlayer.playerBox = BABYLON.Mesh.CreateBox(ghostData.id, 0, this.game.scene);
-    //fakePlayer.playerBox.scaling = new BABYLON.Vector3(0.5,1.2,0.5)
+    fakePlayer.playerBox = BABYLON.Mesh.CreateBox('ghostBox', 2.2, this.game.scene);
     fakePlayer.playerBox.position = positionSpawn;
     fakePlayer.playerBox.isPlayer = true;
     fakePlayer.playerBox.isPickable = true;
-
-    fakePlayer.playerBox.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
-    fakePlayer.playerBox.material.alpha = 0;
-
+    fakePlayer.playerBox.isBody = true;
+    //fakePlayer.playerBox.position.y-=0.6;
+    fakePlayer.playerBox.isPickable = true;
     fakePlayer.playerBox.checkCollisions = true;
     fakePlayer.playerBox.applyGravity = true;
-    //fakePlayer.playerBox.ellipsoid = new BABYLON.Vector3(1.5, 1, 1.5);
-
-    fakePlayer.bodyChar = BABYLON.Mesh.CreateBox('bodyGhost', 2.2, this.game.scene);
-    fakePlayer.bodyChar.parent = fakePlayer.playerBox;
-    //fakePlayer.bodyChar.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5)
-    fakePlayer.bodyChar.isBody = true;
-    fakePlayer.bodyChar.position.y-=0.6;
-    fakePlayer.bodyChar.isPickable = true;
+    //fakePlayer.playerBox.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
+    //fakePlayer.playerBox.material.alpha = 0;
 
     fakePlayer.head = BABYLON.Mesh.CreateBox('headGhost', 2.2, this.game.scene);
     fakePlayer.head.parent = fakePlayer.playerBox;
     //fakePlayer.head.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5)
     fakePlayer.head.isHead = true;
-    fakePlayer.head.position.y += 2;
+    fakePlayer.head.position.y += 2.6;
     fakePlayer.head.isPickable = true;
+    fakePlayer.head.rotation = rotationSpawn;
+
+    // Les materials qui définissent la couleur du joueur
+    fakePlayer.head.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
+    fakePlayer.head.material.diffuseColor = new BABYLON.Color3(0, 1, 1);
+
+    fakePlayer.playerBox.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
+    fakePlayer.playerBox.material.diffuseColor = new BABYLON.Color3(0, 0.6, 0.6);
 
     // Les datas de vie et d'armure du joueur
     fakePlayer.health = ghostData.life;
@@ -58,16 +60,6 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
 
     // A nouveau l'id du joueur
     fakePlayer.uniqueId = ghostData.uniqueId;
-
-    // La rotation. Comme pour le mouvement, elle sert à déterminer le sens de déplacement
-    fakePlayer.rotation = rotationSpawn;
-
-    // Les materials qui définissent la couleur du joueur
-    fakePlayer.head.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
-    fakePlayer.head.material.diffuseColor = new BABYLON.Color3(0, 1, 1);
-
-    fakePlayer.bodyChar.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
-    fakePlayer.bodyChar.material.diffuseColor = new BABYLON.Color3(0, 0.6, 0.6);
 
     return fakePlayer;
 }

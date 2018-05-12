@@ -320,27 +320,30 @@ Weapon.prototype = {
       var renderHeight = _this.Player.game.engine.getRenderHeight(true);
 
       // Cast un rayon au centre de l'écran, on ignore quelques items
-      var direction = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2, function(item) {
+      var target = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2, function(item) {
         if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitHeadPlayer")
             return false;
         else
             return true;
       });
 
+      // Direction du projectile
+      var direction = null;
+
       // Si l'arme est une arme de distance
       if(_this.Armory.weapons[idWeapon].type === 'ranged'){
-        if(weaponAmmos>0){
+        if(weaponAmmos > 0){
             if(_this.Armory.weapons[idWeapon].setup.ammos.type === 'rocket'){
-                direction = direction.pickedPoint.subtractInPlace(_this.Player.camera.playerBox.position);
+                direction = target.pickedPoint.subtractInPlace(this.inventory[this.actualWeapon].absolutePosition);
                 direction = direction.normalize();
 
                 _this.createRocket(_this.Player.camera.headPlayer, direction)
             }else if(_this.Armory.weapons[idWeapon].setup.ammos.type === 'bullet'){
                 // Nous devons tirer des balles simples
-                this.shootBullet(direction)
+                this.shootBullet(target)
             }else{
                 // Nous devons tirer au laser
-                this.createLaser(direction)
+                this.createLaser(target)
             }
             this.inventory[this.actualWeapon].ammos--;
             // MAJ du HUD
@@ -368,20 +371,21 @@ Weapon.prototype = {
       var rotationValue = headPlayerPosition.rotation;
       var newRocket = BABYLON.Mesh.CreateBox("rocket", 0.5, this.Player.scene);
 
-      newRocket.direction = direction;
-    /*  newRocket.direction = new BABYLON.Vector3(
-          Math.sin(rotationValue.y) * Math.cos(rotationValue.x),
-          Math.sin(-rotationValue.x),
-          Math.cos(rotationValue.y) * Math.cos(rotationValue.x)
-      )
-      */
+      //  newRocket.direction = direction;
+      newRocket.direction = new BABYLON.Vector3(
+            Math.sin(rotationValue.y) * Math.cos(rotationValue.x),
+            Math.sin(-rotationValue.x),
+            Math.cos(rotationValue.y) * Math.cos(rotationValue.x)
+        )
+
+
       newRocket.position = new BABYLON.Vector3(
           positionValue.x + (newRocket.direction.x * 1) ,
           positionValue.y + (newRocket.direction.y * 1) ,
           positionValue.z + (newRocket.direction.z * 1));
 
       newRocket.rotation = new BABYLON.Vector3(rotationValue.x,rotationValue.y,rotationValue.z);
-      newRocket.scaling = new BABYLON.Vector3(0.5,0.5,1);
+      newRocket.scaling = new BABYLON.Vector3(0.5, 0.5, 1);
       newRocket.isPickable = false;
 
       newRocket.material = new BABYLON.StandardMaterial("textureWeapon", this.Player.game.scene);
@@ -454,7 +458,7 @@ Weapon.prototype = {
           line.isPickable = false;
           line.edgesWidth = 40.0;
           line.edgesColor = new BABYLON.Color4(colorLine.r, colorLine.g, colorLine.b, 1);
-          console.log(meshFound.pickedMesh.parent)
+          console.log(meshFound.pickedMesh)
           if( meshFound.pickedMesh.isBody){
               // On inflige des dégâts au joueur
               var damages = this.Armory.weapons[idWeapon].setup.damage;
