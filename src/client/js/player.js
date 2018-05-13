@@ -49,14 +49,15 @@ Player.prototype = {
         let spawnPoint = this.game.playerTempPosition;
 
         // On cré la box du player
-        var playerBox = BABYLON.Mesh.CreateBox("playerBox", 2.2, scene);
+        var playerBox = BABYLON.MeshBuilder.CreateBox("playerBox", {height: 3, width: 2, depth: 2}, scene);
+        //playerBox.scaling.y = 1.5;
         //playerBox.scaling = new BABYLON.Vector3(2, 0.8, 2)
         //playerBox.ellipsoid = new BABYLON.Vector3(2, 1.6, 2);
         playerBox.position = new BABYLON.Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z);
         playerBox.isPickable = true;
 
-        var headPlayer = BABYLON.Mesh.CreateBox("hitHeadPlayer", 2.2, scene);
-        headPlayer.position.y += 2.6;
+        var headPlayer = BABYLON.MeshBuilder.CreateBox("hitHeadPlayer", {height: 2, width: 1.5, depth: 2}, scene);
+        headPlayer.position.y += 2.7;
         headPlayer.isPickable = true;
         headPlayer.parent = playerBox;
 
@@ -177,7 +178,9 @@ Player.prototype = {
     // Déplace tous les joueurs
     _checkMove : function(ratioFps){
         // On bouge le player en lui attribuant la caméra
-        this._checkUniqueMove(ratioFps, this.camera);
+        if(this.camera){
+          this._checkUniqueMove(ratioFps, this.camera);
+        }
         for (var i = 0; i < this.ghostPlayers.length; i++) {
             // On bouge chaque ghost présent dans ghostPlayers
             this._checkUniqueMove(ratioFps, this.ghostPlayers[i]);

@@ -100,8 +100,8 @@ var deleteGhost = function(index,position){ // delete the ghost by the index
     myRoom.splice(position,1);
     // ICI fonction pour détruire le ghost du jeu
 }
-var sendGhostRocket = function(position, rotation, direction){
-    socket.emit('newRocket',[position, rotation, direction, personalRoomId]);
+var sendGhostRocket = function(position, rotation, direction, paramRocket){
+    socket.emit('newRocket',[position, rotation, direction, paramRocket, personalRoomId]);
 }
 var sendGhostLaser = function(position1, position2){
     socket.emit('newLaser',[position1, position2, personalRoomId]);
@@ -159,7 +159,7 @@ var deleteGameGhost = function(game,deletedIndex){
   });
 
  socket.on ('createGhostRocket', function (arrayData) {
-     if(arrayData[3] != personalRoomId){
+     if(arrayData[4] != personalRoomId){
          game.createGhostRocket(arrayData);
      }
  });

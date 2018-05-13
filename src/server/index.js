@@ -118,29 +118,34 @@ app.use(express.static(__dirname +'./../../'));
 // ================================================
 // START LISTENING CLIENT
 io.on('connection', function(socket){
-var name = getAName();
-countUsers++;
-socket.name = name;
-var tempUser = {
-    id: socket.client.id,
-    name: socket.name,
-    life: 100,
-    armor: 0,
-    jumpNeed: false,
-    position: getSpawnPoint(), // ex: { x:100, y:5, z:0}
-    actualTypeWeapon: 1,
-    axisMovement: [false,false,false,false],
-    rotation: {x:0, y:0, z:0},
-    headRotation: {x:0, y:0, z:0},
-    score: 0
-};
-room.push(tempUser);
-console.log("room : ");
-console.log(room);
-io.emit('newPlayer',[room, getTopFive(room), props]); // all include sender
+
 
 // ================================================
 // LISTENERS
+
+//socket.on('newPlayer'), () => {
+  var name = getAName();
+  countUsers++;
+  socket.name = name;
+  var tempUser = {
+      id: socket.client.id,
+      name: socket.name,
+      life: 100,
+      armor: 0,
+      jumpNeed: false,
+      position: getSpawnPoint(), // ex: { x:100, y:5, z:0}
+      actualTypeWeapon: 1,
+      axisMovement: [false,false,false,false],
+      rotation: {x:0, y:0, z:0},
+      headRotation: {x:0, y:0, z:0},
+      score: 0
+  };
+  room.push(tempUser);
+  console.log("room : ");
+  console.log(room);
+  io.emit('newPlayer',[room, getTopFive(room), props]); // all include sender
+//}
+
 socket.on('disconnect', function() {
     for(var i=0;i<room.length;i++){
         if(room[i].id === socket.client.id){

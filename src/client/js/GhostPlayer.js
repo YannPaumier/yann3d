@@ -15,7 +15,9 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
         ghostData.rotation.z);
 
 
-    fakePlayer.playerBox = BABYLON.Mesh.CreateBox(ghostData.id, 2.2, this.game.scene);
+    fakePlayer.playerBox = BABYLON.MeshBuilder.CreateBox(ghostData.id, {height: 3, width: 2, depth: 2}, this.game.scene);
+    //fakePlayer.playerBox.scaling.y = 2;
+    //playerBox.scaling = new BABYLON.Vector3(2, 0.8, 2)
     fakePlayer.playerBox.position = positionSpawn;
     fakePlayer.playerBox.isPlayer = true;
     fakePlayer.playerBox.isPickable = true;
@@ -27,11 +29,12 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
     //fakePlayer.playerBox.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
     //fakePlayer.playerBox.material.alpha = 0;
 
-    fakePlayer.head = BABYLON.Mesh.CreateBox('headGhost', 2.2, this.game.scene);
+    fakePlayer.head = BABYLON.MeshBuilder.CreateBox('headGhost', {height: 2, width: 1.5, depth: 2}, this.game.scene);
     fakePlayer.head.parent = fakePlayer.playerBox;
-    //fakePlayer.head.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5)
+    //fakePlayer.head.scaling = new BABYLON.Vector3(0.8, 0.5, 0.8)
+
     fakePlayer.head.isHead = true;
-    fakePlayer.head.position.y += 2.6;
+    fakePlayer.head.position.y += 2.7;
     fakePlayer.head.isPickable = true;
     fakePlayer.head.rotation = rotationSpawn;
 

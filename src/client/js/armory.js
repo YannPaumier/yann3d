@@ -10,7 +10,7 @@ Armory = function(game, player) {
             'timeAnimation' : 400,
             'setup':{
                 // Distance de frappe de l'arme de CaC
-                'range': 2,
+                'range': 10,
                 'damage' : 20,
                 'cadency' : 500,
                 'colorMesh' : new BABYLON.Color3((59/255), (195/255), (203/255))
@@ -45,7 +45,7 @@ Armory = function(game, player) {
             'type':'ranged',
             'timeAnimation' : 400,
             'setup':{
-                'damage' : 30,
+                'damage' : 40,
                 'cadency' : 800,
                 'ammos' : {
                     'type' : 'rocket',
@@ -55,9 +55,9 @@ Armory = function(game, player) {
                     // 'meshAmmosUrl' : '',
                     'meshAmmosName' : 'Rockets',
                     // Rapidité de déplacement de la roquette
-                    'rocketSpeed' : 10,
+                    'rocketSpeed' : 8,
                     // Taille de la roquette
-                    'rocketSize' : 1,
+                    'rocketSize' : 2,
                     // Rayon de l'explosion
                     'explosionRadius' : 40
                 },

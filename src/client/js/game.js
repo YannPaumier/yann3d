@@ -60,7 +60,7 @@ Game = function(canvasId, playerConfig, props) {
 
       // On apelle nos deux fonctions de calcul pour les roquettes
       _this.renderRockets();
-      //_this.renderExplosionRadius();
+
       // On calcule les animations des armes
       _this.renderWeapons();
 
@@ -71,7 +71,7 @@ Game = function(canvasId, playerConfig, props) {
       _this.scene.render();
 
       // Si launchBullets est a true, on tire
-      if(_player.camera.weapons.launchBullets === true){
+      if(_player.camera && _player.camera.weapons.launchBullets === true){
           _player.camera.weapons.launchFire();
       }
     });
@@ -99,7 +99,7 @@ Game.prototype = {
     },
 
     renderWeapons : function(){
-        if(this._PlayerData && this._PlayerData.camera.weapons.inventory){
+        if(this._PlayerData && this._PlayerData.camera && this._PlayerData.camera.weapons.inventory){
             // On regarde toutes les armes dans inventory
             var inventoryWeapons = this._PlayerData.camera.weapons.inventory;
 
@@ -214,11 +214,12 @@ Game.prototype = {
           var positionRocket = dataRocket[0];
           var rotationRocket = dataRocket[1];
           var directionRocket = dataRocket[2];
-          var idPlayer = dataRocket[3];
+          var idPlayer = dataRocket[4];
+          var paramRocket = dataRocket[3];
+          //console.log(paramRocket)
+          newRocket = BABYLON.Mesh.CreateBox('rocket', paramRocket.ammos.rocketSize, this.scene);
 
-          newRocket = BABYLON.Mesh.CreateBox('rocket', 0.5, this.scene);
-
-          newRocket.scaling = new BABYLON.Vector3(1,0.7,2);
+          //newRocket.scaling = new BABYLON.Vector3(1,0.7,2);
 
           newRocket.direction = new BABYLON.Vector3(directionRocket.x,directionRocket.y,directionRocket.z);
 

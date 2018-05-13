@@ -213,7 +213,7 @@ Arena = function(game, props) {
     */
     var columns = [];
     var numberColumn = 6;
-    var sizeArena = 200 -50;
+    var sizeArena = 100*boxArena.scaling.x -50;
     var ratio = ((100/numberColumn)/100) * sizeArena;
     for (var i = 0; i <= 1; i++) {
         if(numberColumn>0){
