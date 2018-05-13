@@ -15,7 +15,7 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
         ghostData.rotation.z);
 
 
-    fakePlayer.playerBox = BABYLON.Mesh.CreateBox('ghostBox', 2.2, this.game.scene);
+    fakePlayer.playerBox = BABYLON.Mesh.CreateBox(ghostData.id, 2.2, this.game.scene);
     fakePlayer.playerBox.position = positionSpawn;
     fakePlayer.playerBox.isPlayer = true;
     fakePlayer.playerBox.isPickable = true;

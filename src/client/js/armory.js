@@ -25,7 +25,7 @@ Armory = function(game, player) {
             'type':'ranged',
             'timeAnimation' : 400,
             'setup':{
-                'damage' : 2,
+                'damage' : 10,
                 'cadency' : 50,
                 'ammos' : {
                     'type' : 'bullet',
@@ -72,9 +72,9 @@ Armory = function(game, player) {
                 'meshName': 'Armageddon'
             },
             'type':'ranged',
-            'timeAnimation' : 400,
+            'timeAnimation' : 1000,
             'setup':{
-                'damage' : 1000,
+                'damage' : 75,
                 'cadency' : 2000,
                 'ammos' : {
                     'type' : 'laser',

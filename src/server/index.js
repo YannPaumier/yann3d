@@ -74,16 +74,16 @@ var namesList = [
     "Yankee",
     "Zulu"];
 var spawnPointsListA = [
-{x:-20, y:1, z:0},
-{x:0, y:1, z:0},
-{x:20, y:1, z:0},
-{x:40, y:1, z:0}
+{x:-20, y:2, z:0},
+{x:0, y:2, z:0},
+{x:20, y:2, z:0},
+{x:40, y:2, z:0}
 ];
 var spawnPointsListB = [
-{x:-20, y:1, z:0},
-{x:0, y:1, z:0},
-{x:20, y:1, z:0},
-{x:40, y:1, z:0}
+{x:-20, y:2, z:0},
+{x:0, y:2, z:0},
+{x:20, y:2, z:0},
+{x:40, y:2, z:0}
 ];
 
 var bonusBoxes = [

@@ -20,12 +20,12 @@ Weapon = function(player) {
 
     // Appel de newWeapon pour la création des armes
     var ezekiel = this.newWeapon('Ezekiel');
-  //  var Timmy = this.newWeapon('Timmy');
-  //  var Crook = this.newWeapon('Crook');
+    var Timmy = this.newWeapon('Timmy');
+    var Crook = this.newWeapon('Crook');
   //  var Armageddon = this.newWeapon('Armageddon')
     this.inventory[0] = ezekiel;
-  //  this.inventory[1] = Timmy;
-  //  this.inventory[2] = Crook;
+    this.inventory[1] = Timmy;
+    this.inventory[2] = Crook;
   //  this.inventory[3] = Armageddon;
 
     // Notre arme actuelle est Ezekiel, qui se trouve en deuxième position
@@ -268,7 +268,7 @@ Weapon.prototype = {
 
     // Si la valeur dépasse 180, c'est que step est supérieur à timeAnimation
     // Dans ce cas, on fait en sorte que result ne dépasse jamais 180
-    if(result>180){
+    if(result > 180){
         result = 180;
     }
     // La valeur 100 sert à arrondir
@@ -406,11 +406,17 @@ Weapon.prototype = {
 
         var setupWeapon = this.Armory.weapons[idWeapon].setup;
 
-        if(meshFound.hit && ( meshFound.pickedMesh.isBody || meshFound.pickedMesh.isHead )){
+        if(meshFound.hit){
             // On a touché un joueur
             var damages = this.Armory.weapons[idWeapon].setup.damage;
-            // On envoie les dégâts ainsi que l'ennemi trouvé grâce à son name
-            sendDamages(damages,meshFound.pickedMesh.parent.name)
+            if( meshFound.pickedMesh.isBody){
+                // On inflige des dégâts au joueur
+                sendDamages(damages,meshFound.pickedMesh.name)
+            }
+            if(meshFound.pickedMesh.isHead){
+                // On inflige des dégâts au joueur
+                sendDamages(damages * 3 ,meshFound.pickedMesh.parent.name, true)
+            }
         }else{
             // L'arme ne touche pas de joueur
             console.log('Not Hit Bullet')
@@ -427,7 +433,15 @@ Weapon.prototype = {
         && meshFound.distance < setupWeapon.range*5
         && ( meshFound.pickedMesh.isBody || meshFound.pickedMesh.isHead )){
           var damages = this.Armory.weapons[idWeapon].setup.damage;
-          sendDamages(damages,meshFound.pickedMesh.parent.name)
+          if( meshFound.pickedMesh.isBody){
+              // On inflige des dégâts au joueur
+              sendDamages(damages,meshFound.pickedMesh.name)
+          }
+          if(meshFound.pickedMesh.isHead){
+              // On inflige des dégâts au joueur
+              sendDamages(damages * 3 ,meshFound.pickedMesh.parent.name, true)
+          }
+
       }else{
           // L'arme frappe dans le vide
           console.log('Not Hit CaC')
@@ -458,16 +472,14 @@ Weapon.prototype = {
           line.isPickable = false;
           line.edgesWidth = 40.0;
           line.edgesColor = new BABYLON.Color4(colorLine.r, colorLine.g, colorLine.b, 1);
-          console.log(meshFound.pickedMesh)
+          var damages = this.Armory.weapons[idWeapon].setup.damage;
           if( meshFound.pickedMesh.isBody){
               // On inflige des dégâts au joueur
-              var damages = this.Armory.weapons[idWeapon].setup.damage;
-              sendDamages(damages,meshFound.pickedMesh.parent.name)
+              sendDamages(damages, meshFound.pickedMesh.name)
           }
           if(meshFound.pickedMesh.isHead){
               // On inflige des dégâts au joueur
-              var damages = this.Armory.weapons[idWeapon].setup.damage;
-              sendDamages(damages * 1.5 ,meshFound.pickedMesh.parent.name, true)
+              sendDamages(damages * 3, meshFound.pickedMesh.parent.name, true)
           }
 
           // On envoie le point de départ et le point d'arrivée
@@ -478,7 +490,6 @@ Weapon.prototype = {
     },
 
     reloadWeapon : function(type, numberAmmos) {
-
         var ammoHud = document.getElementById('ammosValue');
         var existingWeapon = false;
         // On part du principe que l'arme n'existe pas
@@ -488,7 +499,7 @@ Weapon.prototype = {
                 // Si l'arme existe, on lui donne les munitions
                 var existingWeapon = true;
                 if((this.inventory[i].ammos + numberAmmos) > this.Armory.weapons[type].setup.ammos.maximum){
-                    this.inventory[i].ammos = this.Armory.weapons[i].setup.ammos.maximum
+                    this.inventory[i].ammos = this.Armory.weapons[type].setup.ammos.maximum
                 }else{
                     this.inventory[i].ammos += numberAmmos;
                 }
