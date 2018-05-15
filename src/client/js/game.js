@@ -25,15 +25,21 @@ Game = function(canvasId, playerConfig, props) {
     var armory = new Armory(this);
     _this.armory = armory;
 
-    this.playerTempPosition = playerConfig.position;
-
     // On lance la scene (lumières, meshes.. ) et les props
     var _arena = new Arena(_this, props);
     this._ArenaData = _arena;
 
-    // On lance la camera du jouer
-    var _player = new Player(_this, canvas);
-    this._PlayerData = _player;
+    var isSpectator = false;
+    if(!isSpectator){
+
+        this.playerTempPosition = playerConfig.position;
+
+        // Set du joueur
+        var _player = new Player(_this, canvas);
+        this._PlayerData = _player;
+
+        
+    }
 
     // Les roquettes générées dans Player.js
     this._rockets = [];
@@ -52,28 +58,28 @@ Game = function(canvasId, playerConfig, props) {
       // Récuperet le ratio par les fps
       _this.fps = Math.round(1000/engine.getDeltaTime());
 
-      // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
-      _player._checkMove((_this.fps)/60);
-
-      // On check les props
-      _this._ArenaData._checkProps();
-
       // On apelle nos deux fonctions de calcul pour les roquettes
       _this.renderRockets();
-
-      // On calcule les animations des armes
-      _this.renderWeapons();
 
       // On calcule la diminution de la taille du laser
       _this.renderLaser();
 
+      // Si launchBullets est a true, on tire
+      if(!isSpectator && _player.camera && _player.camera.weapons.launchBullets === true){
+        // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
+        _player._checkMove((_this.fps)/60);
+        
+        _player.camera.weapons.launchFire();
+
+        // On check les props
+        _this._ArenaData._checkProps();
+
+        // On calcule les animations des armes
+        _this.renderWeapons();
+      }
+
       // On affiche la scene
       _this.scene.render();
-
-      // Si launchBullets est a true, on tire
-      if(_player.camera && _player.camera.weapons.launchBullets === true){
-          _player.camera.weapons.launchFire();
-      }
     });
 
     // Ajuste la vue 3D si la fenetre est agrandi ou diminué

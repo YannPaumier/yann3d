@@ -100,7 +100,7 @@ Player.prototype = {
 
     },
 
-   _initGraphism : function (scene, camera){
+    _initGraphism : function (scene, camera){
         var defaultPipeline = new BABYLON.DefaultRenderingPipeline("default", true, scene, [camera]);
          defaultPipeline.fxaaEnabled = false;
          defaultPipeline.bloomEnabled = false;
@@ -188,7 +188,7 @@ Player.prototype = {
     },
 
     // Vérifie chaque joeur présent dans la scene
-  _checkUniqueMove : function(ratioFps, player) {
+    _checkUniqueMove : function(ratioFps, player) {
         var relativeSpeed = this.speed / ratioFps;
         var playerSelected = player;
 
