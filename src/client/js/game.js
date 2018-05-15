@@ -6,6 +6,9 @@ Game = function(canvasId, playerConfig, props) {
     this.engine = engine;
     //this.engine.displayLoadingUI();
 
+    // Elements HUD
+    this.displayAnnouncement = document.getElementById('announcementKill');
+
     var _this = this;
     _this.actualTime = Date.now();
 
@@ -25,15 +28,24 @@ Game = function(canvasId, playerConfig, props) {
     var armory = new Armory(this);
     _this.armory = armory;
 
-    this.playerTempPosition = playerConfig.position;
-
     // On lance la scene (lumières, meshes.. ) et les props
     var _arena = new Arena(_this, props);
     this._ArenaData = _arena;
 
-    // On lance la camera du jouer
-    var _player = new Player(_this, canvas);
-    this._PlayerData = _player;
+    this.isSpectator = true;
+    
+    // Check if Spectator / Player
+    if(!this.isSpectator){
+
+        this.playerTempPosition = playerConfig.position;
+
+        // Set du joueur
+        var _player = new Player(_this, canvas);
+        this._PlayerData = _player;
+
+    }else{
+        this._spectator = new Spectator(_this);
+    }
 
     // Les roquettes générées dans Player.js
     this._rockets = [];
@@ -51,29 +63,32 @@ Game = function(canvasId, playerConfig, props) {
     engine.runRenderLoop(function () {
       // Récuperet le ratio par les fps
       _this.fps = Math.round(1000/engine.getDeltaTime());
+      
+      if(!_this.isSpectator && _player.camera){
+        // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
+        _player._checkMove((_this.fps)/60);
 
-      // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
-      _player._checkMove((_this.fps)/60);
+        // On check les props
+        _this._ArenaData._checkProps();
 
-      // On check les props
-      _this._ArenaData._checkProps();
+        // On calcule les animations des armes
+        _this.renderWeapons();
 
+        // Si launchBullets est a true, on tire
+        if(_player.camera.weapons.launchBullets === true){
+            _player.camera.weapons.launchFire();
+        }
+    }
+        
       // On apelle nos deux fonctions de calcul pour les roquettes
       _this.renderRockets();
 
-      // On calcule les animations des armes
-      _this.renderWeapons();
-
       // On calcule la diminution de la taille du laser
       _this.renderLaser();
-
-      // On affiche la scene
+      
+        // On affiche la scene
       _this.scene.render();
 
-      // Si launchBullets est a true, on tire
-      if(_player.camera && _player.camera.weapons.launchBullets === true){
-          _player.camera.weapons.launchFire();
-      }
     });
 
     // Ajuste la vue 3D si la fenetre est agrandi ou diminué
@@ -293,6 +308,12 @@ Game.prototype = {
         console.log(arrayData[2]);
       }
     }
+};
+
+document.getElementById("join").onclick = function(){
+    //console.log("hello")
+    var characterName = document.getElementById("char-name").value;
+    newPlayer(characterName);
 };
 
 // ------------------------- TRANSFO DE DEGRES/RADIANS

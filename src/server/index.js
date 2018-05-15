@@ -14,7 +14,6 @@ var ifaces = os.networkInterfaces();
 // ================================================
 
 
-
 // ================================================
 // SHOW IP ADDRESS IN CONSOLE
 console.log('=============');
@@ -119,11 +118,11 @@ app.use(express.static(__dirname +'./../../'));
 // START LISTENING CLIENT
 io.on('connection', function(socket){
 
+//io.emit('newSpectator');
 
 // ================================================
 // LISTENERS
-
-//socket.on('newPlayer'), () => {
+socket.on('newPlayer', function(data){
   var name = getAName();
   countUsers++;
   socket.name = name;
@@ -143,8 +142,9 @@ io.on('connection', function(socket){
   room.push(tempUser);
   console.log("room : ");
   console.log(room);
+  console.log("bonjour")
   io.emit('newPlayer',[room, getTopFive(room), props]); // all include sender
-//}
+});
 
 socket.on('disconnect', function() {
     for(var i=0;i<room.length;i++){

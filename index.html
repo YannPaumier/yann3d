@@ -15,19 +15,31 @@
   </head>
 
   <body>
+
+    <!-- Promps -->
+    <div id="prompt" class="prompt">
+        <div class="retro-arena">GROS ARENA</div>
+        <div class="char-name">
+            <input id="char-name" type="text" class="form-control" placeholder="Name your character" maxlength="10" autocomplete="off">
+            <span class="input-group-btn">
+                <input id="join" type="submit" value="Join the battle">
+            </span>
+        </div>
+    </div>
+    
     <div id="topHud">
-      <div id="eventConnection"></div>
-      <div id="leaderBoard">
-          <h2>Leaderboard</h2>
-          <ul>
-              <li><p><span class="nameLeaderboard" id="player0"></span><span class="scoreLeaderboard" id="scorePlayer0"></span></p></li>
-              <li><p><span class="nameLeaderboard" id="player1"></span><span class="scoreLeaderboard" id="scorePlayer1"></span></p></li>
-              <li><p><span class="nameLeaderboard" id="player2"></span><span class="scoreLeaderboard" id="scorePlayer2"></span></p></li>
-              <li><p><span class="nameLeaderboard" id="player3"></span><span class="scoreLeaderboard" id="scorePlayer3"></span></p></li>
-              <li><p><span class="nameLeaderboard" id="player4"></span><span class="scoreLeaderboard" id="scorePlayer4"></span></p></li>
-          </ul>
-          <p id="identityGame">You are <span id="gameName"></span>. Kill them all!<p>
-      </div>
+        <div id="eventConnection"></div>
+        <div id="leaderBoard">
+            <h2>Leaderboard</h2>
+            <ul>
+                <li><p><span class="nameLeaderboard" id="player0"></span><span class="scoreLeaderboard" id="scorePlayer0"></span></p></li>
+                <li><p><span class="nameLeaderboard" id="player1"></span><span class="scoreLeaderboard" id="scorePlayer1"></span></p></li>
+                <li><p><span class="nameLeaderboard" id="player2"></span><span class="scoreLeaderboard" id="scorePlayer2"></span></p></li>
+                <li><p><span class="nameLeaderboard" id="player3"></span><span class="scoreLeaderboard" id="scorePlayer3"></span></p></li>
+                <li><p><span class="nameLeaderboard" id="player4"></span><span class="scoreLeaderboard" id="scorePlayer4"></span></p></li>
+            </ul>
+            <p id="identityGame">You are <span id="gameName"></span>. Kill them all!<p>
+        </div>   
     </div>
 
     <div id="bottomHud">

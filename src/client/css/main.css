@@ -207,3 +207,28 @@ h2{
     font-size: 1rem;
     margin: 15px 15%;
 }
+
+/* ------------------------------- PROMPT --------------------------------- */
+.prompt{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -50px;
+	width: 600px;
+	background-color: rgba(61,61,61,.5);
+}
+.retro-arena{
+	text-align: center;
+	margin: 0px auto;
+	font-family: "League-Gothic", Courier;
+	font-size: 40px; text-transform: uppercase;
+	color: #707070;
+	text-shadow: 2px 2px 0px #eee, 3px 3px 0px #707070;
+}
+
+.char-name{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 100px;
+}

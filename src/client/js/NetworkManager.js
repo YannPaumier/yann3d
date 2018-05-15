@@ -29,7 +29,7 @@ socket.on('newPlayer',function(dataNewPlayer){
     }
     game.displayScore(score);
 
-    // // Vérifie les joueurs qui se connectent
+    // Vérifie les joueurs qui se connectent
     checkIfNewGhost(room);
 });
 // Vérifie les joueurs qui se déconnectent
@@ -41,6 +41,9 @@ socket.on('disconnectPlayer', function(room){
 
 // ================================================
 // EXTRA FUNCTIONS
+var newPlayer = function (name) {
+    socket.emit('newPlayer', name);
+}
 var sortRoom = function(room){ // sort the players in room by id
     return room.sort(function(a, b) {
             var nameA = a.id.toUpperCase(); // ignore upper and lowercase
@@ -142,8 +145,10 @@ var deleteGameGhost = function(game,deletedIndex){
 }
 // ================================================
  socket.on('requestPosition', function(room){
-     var dataToSend = [game._PlayerData.sendActualData(), personalRoomId];
-     socket.emit('updateData', dataToSend);
+     if(game._PlayerData){
+         var dataToSend = [game._PlayerData.sendActualData(), personalRoomId];
+         socket.emit('updateData', dataToSend);
+     }
 });
 
 // MET A JOUR LES GHOSTS
