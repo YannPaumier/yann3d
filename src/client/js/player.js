@@ -27,8 +27,11 @@ Player = function(game, canvas) {
     this.speed = 0.8;
     this.angularSensibility = 200;
 
+    // Initisalisation du mod spectateur
+    this._initSpectator(this.scene);
+
     // Initialisation de la caméra
-    this._initCamera(this.scene, canvas);
+    //this._initCamera(this.scene, canvas);
 
     // Initisalisation des graphisme
     //this._initGraphism(this.scene, this.camera);
@@ -37,7 +40,6 @@ Player = function(game, canvas) {
     this.controlEnabled = false;
     // Axe de mouvement X et Z
     this.axisMovement = [false,false,false,false];
-    this._initControl(this.scene, canvas);
 
     // On lance l'event _initPointerLock pour checker le clic dans la scène
     this._initPointerLock();
@@ -46,6 +48,7 @@ Player = function(game, canvas) {
 Player.prototype = {
 
     _initSpectator : function(scene){
+        removePlayer();
         if(this.camera){
             // Suppression de la playerBox
             this.camera.playerBox.dispose();
@@ -59,7 +62,7 @@ Player.prototype = {
             }
             inventoryWeapons = [];
         }
-
+        
         this.camera =  new BABYLON.ArcRotateCamera("Camera", 0, 30, 110, new BABYLON.Vector3(0, 0, 1), scene);
         this.camera.setTarget(BABYLON.Vector3.Zero());
     },
@@ -119,7 +122,9 @@ Player.prototype = {
 
         // Appel de la création des armes
         this.camera.weapons = new Weapon(this);
-
+        
+        this._initControl(this.scene, canvas);
+        
         this.launchRessurection();
     },
 

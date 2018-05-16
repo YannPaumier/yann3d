@@ -31,21 +31,12 @@ Game = function(canvasId, playerConfig, props) {
     // On lance la scene (lumières, meshes.. ) et les props
     var _arena = new Arena(_this, props);
     this._ArenaData = _arena;
-
-    this.isSpectator = true;
     
-    // Check if Spectator / Player
-    if(!this.isSpectator){
+    this.playerTempPosition = playerConfig.position;
 
-        this.playerTempPosition = playerConfig.position;
-
-        // Set du joueur
-        var _player = new Player(_this, canvas);
-        this._PlayerData = _player;
-
-    }else{
-        this._spectator = new Spectator(_this);
-    }
+    // Set du joueur
+    var _player = new Player(_this, canvas);
+    this._PlayerData = _player;
 
     // Les roquettes générées dans Player.js
     this._rockets = [];
@@ -57,6 +48,12 @@ Game = function(canvasId, playerConfig, props) {
     // On charge les fichier
     this.headshotsound = new BABYLON.Sound("headshot", "/src/client/assets/sounds/headshot.mp3", this.scene);
 
+    document.getElementById("join").onclick = function(){
+        var characterName = document.getElementById("char-name").value;
+        _this._PlayerData._initCamera(_this.scene, canvas);
+        //newPlayer(characterName);
+    };
+    
     /*
     * Boucle du jeu
     */
@@ -64,7 +61,7 @@ Game = function(canvasId, playerConfig, props) {
       // Récuperet le ratio par les fps
       _this.fps = Math.round(1000/engine.getDeltaTime());
       
-      if(!_this.isSpectator && _player.camera){
+      if(!_player.isSpectator){
         // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
         _player._checkMove((_this.fps)/60);
 
@@ -308,12 +305,6 @@ Game.prototype = {
         console.log(arrayData[2]);
       }
     }
-};
-
-document.getElementById("join").onclick = function(){
-    //console.log("hello")
-    var characterName = document.getElementById("char-name").value;
-    newPlayer(characterName);
 };
 
 // ------------------------- TRANSFO DE DEGRES/RADIANS

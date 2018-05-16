@@ -141,8 +141,9 @@ io.on('connection', function(socket){
   room.push(tempUser);
   console.log("room : ");
   console.log(room);
-  io.emit('newPlayer',[room, getTopFive(room), props]); // all include sender
+  io.emit('newSpectator',[room, getTopFive(room), props]); // all include sender
 
+//socket.on('newPlayer')
 socket.on('disconnect', function() {
     for(var i=0;i<room.length;i++){
         if(room[i].id === socket.client.id){
@@ -266,8 +267,8 @@ socket.on('updatePropsRemove', function(dataRemove) {
     }
 });
 
-socket.on('deleteGhost', function(idPlayer){
-    io.sockets.emit ('deleteGhostPlayer', idPlayer);
+socket.on('removePlayer', function(idGhost){
+    io.sockets.emit ('removeGhost', idGhost);
 });
 
 // ================================================

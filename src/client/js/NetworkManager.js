@@ -12,7 +12,7 @@ var personalRoomId = false;
 var myConfig = {};
 var isPlayerAlreadySet = false;
 
-socket.on('newPlayer',function(dataNewPlayer){
+socket.on('newSpectator',function(dataNewPlayer){
     var room = dataNewPlayer[0];
     var score = dataNewPlayer[1];
     var props = dataNewPlayer[2];
@@ -40,10 +40,8 @@ socket.on('disconnectPlayer', function(room){
 
 
 // ================================================
-// EXTRA FUNCTIONS
-var newPlayer = function (name) {
-    socket.emit('newPlayer', name);
-}
+// FUNCTIONS
+
 var sortRoom = function(room){ // sort the players in room by id
     return room.sort(function(a, b) {
             var nameA = a.id.toUpperCase(); // ignore upper and lowercase
@@ -89,46 +87,25 @@ var checkIfGhostDisconnect = function(room){ // check if it miss a ghost in room
             deleteGhost(myRoom[i].id, i);
         }
     }
-}
+};
+
 var createGhost = function(ghost, id){ // create a new ghost
     myRoom.push(ghost);
     newGhostPlayer = new GhostPlayer(game, ghost, id);
     game._PlayerData.ghostPlayers.push(newGhostPlayer);
-}
+};
+ 
 var updateGhost = function(data){ // update all the ghosts with room data
     socket.emit('updateData',[data, personalRoomId]);
-}
+};
+
 var deleteGhost = function(index,position){ // delete the ghost by the index
     deleteGameGhost(game,index);
     myRoom.splice(position,1);
     // ICI fonction pour détruire le ghost du jeu
-}
-var sendGhostRocket = function(position, rotation, direction, paramRocket){
-    socket.emit('newRocket',[position, rotation, direction, paramRocket, personalRoomId]);
-}
-var sendGhostLaser = function(position1, position2){
-    socket.emit('newLaser',[position1, position2, personalRoomId]);
-}
-var sendDamages = function(damage, target, headshot){ // update all the ghosts with room datas
-    socket.emit('distributeDamage',[damage, target, personalRoomId, headshot]);
-}
-var sendPostMortem = function(whoKilledMe){ // update all the ghosts with room data
-    if(!whoKilledMe){
-        var whoKilledMe = personalRoomId;
-    }
-    socket.emit('killPlayer',[personalRoomId, whoKilledMe]);
-}
-var ressurectMe = function(position){ // update all the ghosts with room data
-    var dataToSend = [game._PlayerData.sendActualData(),personalRoomId];
-    dataToSend[0].ghostCreationNeeded = true;
-    socket.emit('updateData',dataToSend);
-}
+};
 
-var destroyPropsToServer = function(idServer,type){ // update all the ghosts with room data
-    socket.emit('updatePropsRemove',[idServer,type]);
-}
-
-var deleteGameGhost = function(game,deletedIndex){
+var deleteGameGhost = function(game, deletedIndex){
     ghostPlayers = game._PlayerData.ghostPlayers;
     for (var i = 0; i < ghostPlayers.length; i++) {
         console.log(ghostPlayers[i].idRoom);
@@ -142,12 +119,56 @@ var deleteGameGhost = function(game,deletedIndex){
             break;
         }
     }
+};
+
+// EMIT IO FUNCTION  =================================================
+var newPlayer = function (name) {
+    socket.emit('newPlayer', name);
+};
+
+var removePlayer = function() {
+    socket.emit('removePlayer', personalRoomId);
+};
+
+var ressurectMe = function(position){ // update all the ghosts with room data
+    var dataToSend = [game._PlayerData.sendActualData(),personalRoomId];
+    dataToSend[0].ghostCreationNeeded = true;
+    socket.emit('updateData',dataToSend);
+};
+
+var destroyPropsToServer = function(idServer,type){ // update all the ghosts with room data
+    socket.emit('updatePropsRemove',[idServer,type]);
+};
+
+var sendGhostRocket = function(position, rotation, direction, paramRocket){
+    socket.emit('newRocket',[position, rotation, direction, paramRocket, personalRoomId]);
+};
+
+var sendGhostLaser = function(position1, position2){
+    socket.emit('newLaser',[position1, position2, personalRoomId]);
+};
+
+var sendDamages = function(damage, target, headshot){ // update all the ghosts with room datas
+    socket.emit('distributeDamage',[damage, target, personalRoomId, headshot]);
 }
-// ================================================
+var sendPostMortem = function(whoKilledMe){ // update all the ghosts with room data
+    if(!whoKilledMe){
+        var whoKilledMe = personalRoomId;
+    }
+    socket.emit('killPlayer',[personalRoomId, whoKilledMe]);
+};
+
+//RECEPT IO FUNCTIONS ================================================
  socket.on('requestPosition', function(room){
      if(game._PlayerData){
          var dataToSend = [game._PlayerData.sendActualData(), personalRoomId];
          socket.emit('updateData', dataToSend);
+     }
+});
+
+socket.on ('giveDamage', function (arrayData) {
+    if(arrayData[1] == personalRoomId){
+        game._PlayerData.getDamage(arrayData[0],arrayData[2]);
      }
 });
 
@@ -175,13 +196,7 @@ var deleteGameGhost = function(game,deletedIndex){
      }
  });
 
- socket.on ('giveDamage', function (arrayData) {
-     if(arrayData[1] == personalRoomId){
-         game._PlayerData.getDamage(arrayData[0],arrayData[2]);
-      }
- });
-
- socket.on('deleteGhostPlayer', function(idGhost){
+ socket.on('removeGhost', function(idGhost){
     deleteGameGhost(game, idGhost);
  });
 
