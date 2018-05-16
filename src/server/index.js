@@ -122,7 +122,6 @@ io.on('connection', function(socket){
 
 // ================================================
 // LISTENERS
-socket.on('newPlayer', function(data){
   var name = getAName();
   countUsers++;
   socket.name = name;
@@ -142,9 +141,7 @@ socket.on('newPlayer', function(data){
   room.push(tempUser);
   console.log("room : ");
   console.log(room);
-  console.log("bonjour")
   io.emit('newPlayer',[room, getTopFive(room), props]); // all include sender
-});
 
 socket.on('disconnect', function() {
     for(var i=0;i<room.length;i++){
@@ -192,7 +189,7 @@ socket.on('killPlayer', function(arrayData) {
             arrayData[2] = room[i].name;
         }
     }
-    io.sockets.emit ('killGhostPlayer', [arrayData,room]);
+    io.sockets.emit ('killGhostPlayer', [arrayData, room]);
 });
 socket.on('ressurectPlayer', function(idPlayer) {
     io.sockets.emit ('ressurectGhostPlayer', idPlayer);
@@ -268,6 +265,11 @@ socket.on('updatePropsRemove', function(dataRemove) {
         break;
     }
 });
+
+socket.on('deleteGhost', function(idPlayer){
+    io.sockets.emit ('deleteGhostPlayer', idPlayer);
+});
+
 // ================================================
 });
 // ================================================

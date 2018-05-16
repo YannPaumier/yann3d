@@ -181,6 +181,10 @@ var deleteGameGhost = function(game,deletedIndex){
       }
  });
 
+ socket.on('deleteGhostPlayer', function(idGhost){
+    deleteGameGhost(game, idGhost);
+ });
+
  socket.on ('killGhostPlayer', function (arrayData) {
      var idArray = arrayData[0];
      var roomScore = arrayData[1];

@@ -17,6 +17,9 @@ Player = function(game, canvas) {
     // Si le tir est activée ou non
     this.weaponShoot = false;
 
+    // Si le joueur est en mode spectator
+    this.isSpectator = true;
+
     // Liste des joueurs
     this.ghostPlayers=[];
 
@@ -41,6 +44,25 @@ Player = function(game, canvas) {
 };
 
 Player.prototype = {
+
+    _initSpectator : function(scene){
+        if(this.camera){
+            // Suppression de la playerBox
+            this.camera.playerBox.dispose();
+    
+            // Suppression de la camera
+            this.camera.dispose();
+            // Suppression de l'inventaire
+            var inventoryWeapons = this.camera.weapons.inventory;
+            for (var i = 0; i < inventoryWeapons.length; i++) {
+                inventoryWeapons[i].dispose();
+            }
+            inventoryWeapons = [];
+        }
+
+        this.camera =  new BABYLON.ArcRotateCamera("Camera", 0, 30, 110, new BABYLON.Vector3(0, 0, 1), scene);
+        this.camera.setTarget(BABYLON.Vector3.Zero());
+    },
 
     _initCamera : function(scene, canvas) {
         // Math.random nous donne un nombre entre 0 et 1
@@ -98,6 +120,7 @@ Player.prototype = {
         // Appel de la création des armes
         this.camera.weapons = new Weapon(this);
 
+        this.launchRessurection();
     },
 
     _initGraphism : function (scene, camera){
