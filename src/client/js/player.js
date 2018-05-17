@@ -6,7 +6,7 @@ Player = function(game, canvas) {
     this.displayAnnouncement = document.getElementById('announcementKill');
     this.textDisplayAnnouncement = document.getElementById('textAnouncement');
     this.textHealth = document.getElementById('textHealth');
-    this.textArmor = document.getElementById('textArmor')
+    this.textArmor = document.getElementById('textArmor');
 
     // Appel des variables nécéssaires
     this.game = game;
@@ -105,6 +105,9 @@ Player.prototype = {
         */
         // Si le joueur est en vie ou non
         this.isAlive = true;
+        
+        // Enlève le status de spectateur
+        this.isSpectator = false;
         // La santé du joueur
         this.camera.health = 100;
         // L'armure du joueur
@@ -206,7 +209,7 @@ Player.prototype = {
     // Déplace tous les joueurs
     _checkMove : function(ratioFps){
         // On bouge le player en lui attribuant la caméra
-        if(this.camera){
+        if(this.camera && !this.isSpectator){
           this._checkUniqueMove(ratioFps, this.camera);
         }
         for (var i = 0; i < this.ghostPlayers.length; i++) {

@@ -8,6 +8,7 @@ Game = function(canvasId, playerConfig, props) {
 
     // Elements HUD
     this.displayAnnouncement = document.getElementById('announcementKill');
+    this.prompt = document.getElementById('prompt');
 
     var _this = this;
     _this.actualTime = Date.now();
@@ -51,7 +52,7 @@ Game = function(canvasId, playerConfig, props) {
     document.getElementById("join").onclick = function(){
         var characterName = document.getElementById("char-name").value;
         _this._PlayerData._initCamera(_this.scene, canvas);
-        //newPlayer(characterName);
+        _this.prompt.style.display="none";
     };
     
     /*
@@ -61,9 +62,10 @@ Game = function(canvasId, playerConfig, props) {
       // Récuperet le ratio par les fps
       _this.fps = Math.round(1000/engine.getDeltaTime());
       
+      // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
+      _player._checkMove((_this.fps)/60);
+      
       if(!_player.isSpectator){
-        // Checker le mouvement du joueur en lui envoyant le ratio de déplacement
-        _player._checkMove((_this.fps)/60);
 
         // On check les props
         _this._ArenaData._checkProps();

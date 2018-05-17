@@ -225,5 +225,5 @@ socket.on ('giveDamage', function (arrayData) {
      game._ArenaData.recreatePropFromServer(createdProp)
 });
 socket.on ('announcement', function (arrayData) {
-    game.displayAnnouncement(arrayData);
+      game.displayAnnouncement(arrayData);
 });
