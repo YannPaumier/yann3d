@@ -7,7 +7,6 @@ Game = function(canvasId, playerConfig, props) {
     //this.engine.displayLoadingUI();
 
     // Elements HUD
-    this.displayAnnouncement = document.getElementById('announcementKill');
     this.prompt = document.getElementById('prompt');
 
     var _this = this;
@@ -22,12 +21,20 @@ Game = function(canvasId, playerConfig, props) {
     //Opti de la scene
     var options = new BABYLON.SceneOptimizerOptions();
     options.addOptimization(new BABYLON.HardwareScalingOptimization(0, 1));
+    
     // Optimizer
     var optimizer = new BABYLON.SceneOptimizer(this.scene, options);
 
     // Set de l'armurerie
     var armory = new Armory(this);
     _this.armory = armory;
+
+    // Chargement des sons
+    //var sounds = new Sound(this.scene);
+    //this.sounds = sounds;
+    var music1 = new BABYLON.Sound("Violons11", "/src/client/assets/sounds/music.wav", this.scene, 
+		null, { loop: true, autoplay: true, spatialSound: true, maxDistance: 25 });
+	music1.setPosition(new BABYLON.Vector3(20, 0, 0));
 
     // On lance la scene (lumières, meshes.. ) et les props
     var _arena = new Arena(_this, props);
@@ -301,11 +308,22 @@ Game.prototype = {
     displayAnnouncement(arrayData){
       if(arrayData[0] == "headshot");
       {
-        this.headshotsound.play()
+        this.headshotsound.play();
         console.log(arrayData[0]);
         console.log(arrayData[1]);
         console.log(arrayData[2]);
       }
+    },
+
+    playSound(soundName, position){
+        if(soundName === "rocket"){
+            let sound = this.sounds[0].sound;
+            sound.setPosition(new BABYLON.Vector3(10, 10, 10));
+            //sound.position = new BABYLON.Vector3(position.x, position.y, position.z)
+            sound.play();
+            console.log(sound);
+            
+        }
     }
 };
 

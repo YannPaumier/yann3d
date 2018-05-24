@@ -72,7 +72,8 @@ var checkIfNewGhost = function(room){ // check if there is a new ghost in room
             }
         }
     }
-}
+};
+
 var checkIfGhostDisconnect = function(room){ // check if it miss a ghost in room
     for(var i=0; i < myRoom.length; i++){
         var ghostExist = false;
@@ -160,7 +161,7 @@ var sendPostMortem = function(whoKilledMe){ // update all the ghosts with room d
 
 //RECEPT IO FUNCTIONS ================================================
  socket.on('requestPosition', function(room){
-     if(game._PlayerData){
+     if(!game._PlayerData.isSpectator){
          var dataToSend = [game._PlayerData.sendActualData(), personalRoomId];
          socket.emit('updateData', dataToSend);
      }
@@ -219,11 +220,11 @@ socket.on ('giveDamage', function (arrayData) {
 });
 
  socket.on ('deleteProps', function (deleteProp) {
-     game._ArenaData.deletePropFromServer(deleteProp)
+     game._ArenaData.deletePropFromServer(deleteProp);
  });
  socket.on ('recreateProps', function (createdProp) {
-     game._ArenaData.recreatePropFromServer(createdProp)
+     game._ArenaData.recreatePropFromServer(createdProp);
 });
 socket.on ('announcement', function (arrayData) {
-      game.displayAnnouncement(arrayData);
+    game.displayAnnouncement(arrayData);
 });

@@ -38,6 +38,22 @@ GhostPlayer = function(game, ghostData, idRoom) { // Game, Infor du ghost, id du
     fakePlayer.head.isPickable = true;
     fakePlayer.head.rotation = rotationSpawn;
 
+    // Création des yeux
+    fakePlayer.eye1 = new BABYLON.MeshBuilder.CreateDisc("eyes", {radius: 0.2, arc: 1, tessellation: 12, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.game.scene);
+    fakePlayer.eye1.isHead = true;
+    fakePlayer.eye1.isPickable = false;
+    fakePlayer.eye1.position.z += 1.1;
+    fakePlayer.eye1.position.x += 0.3;
+    fakePlayer.eye1.position.y += 0.1;
+    //fakePlayer.eye1.rotation.y = (Math.PI*90)/180;
+    fakePlayer.eye1.material = new BABYLON.StandardMaterial("textureEyes", this.game.scene);
+    fakePlayer.eye1.material.diffuseColor = new BABYLON.Color3(1, 1, 1);
+    fakePlayer.eye1.parent = fakePlayer.head;
+
+    fakePlayer.eye2 = fakePlayer.eye1.clone("eyes");
+    fakePlayer.eye2.position.x -= 0.6;
+
+
     // Les materials qui définissent la couleur du joueur
     fakePlayer.head.material = new BABYLON.StandardMaterial("textureGhost", this.game.scene);
     fakePlayer.head.material.diffuseColor = new BABYLON.Color3(0, 1, 1);

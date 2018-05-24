@@ -311,11 +311,14 @@ Weapon.prototype = {
 
       // Cast un rayon au centre de l'écran, on ignore quelques items
       var target = _this.Player.game.scene.pick(renderWidth/2,renderHeight/2, function(item) {
-        if (item.name == "playerBox" || item.name == "weapon" || item.id == "hitHeadPlayer")
+        if (item.name == "playerBox" || item.name == "weapon" || item.name == "eyes" || item.id == "hitHeadPlayer")
             return false;
         else
             return true;
       });
+
+      // Jouer le son 
+      _this.Player.game.playSound('rocket', _this.Player.camera.playerBox.position);
 
       // Direction du projectile
       var direction = null;
@@ -400,6 +403,7 @@ Weapon.prototype = {
         if(meshFound.hit){
             // On a touché un joueur
             var damages = this.Armory.weapons[idWeapon].setup.damage;
+            
             if( meshFound.pickedMesh.isBody){
                 // On inflige des dégâts au joueur
                 sendDamages(damages,meshFound.pickedMesh.name)

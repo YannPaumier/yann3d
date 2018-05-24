@@ -80,12 +80,12 @@ Player.prototype = {
         //playerBox.ellipsoid = new BABYLON.Vector3(2, 1.6, 2);
         playerBox.position = new BABYLON.Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z);
         playerBox.isPickable = true;
-
+        console.log(playerBox.position)
         var headPlayer = BABYLON.MeshBuilder.CreateBox("hitHeadPlayer", {height: 2, width: 1.5, depth: 2}, scene);
         headPlayer.position.y += 2.7;
         headPlayer.isPickable = true;
         headPlayer.parent = playerBox;
-
+    
         // On crée la caméra
         this.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, 0), scene);
         //this.camera = new BABYLON.ArcRotateCamera("camera", -Math.PI/2, Math.PI/4, 10, new BABYLON.Vector3(0, 0, 0), scene);
@@ -94,11 +94,12 @@ Player.prototype = {
         this.game.scene.activeCamera = this.camera;
         this.camera.playerBox = playerBox;
         this.camera.headPlayer = headPlayer;
-        this.camera.parent = headPlayer;
-
+        //this.camera.parent = headPlayer;
+        playerBox.parent = this.camera;
         // Ajout des collisions avec playerBox
-        this.camera.playerBox.checkCollisions = true;
-        this.camera.playerBox.applyGravity = true;
+       // this.camera.playerBox.checkCollisions = true;
+       this.camera.checkCollisions = true;
+       this.camera.playerBox.applyGravity = true;
 
         /*
         * Information du joueur
@@ -222,13 +223,16 @@ Player.prototype = {
     _checkUniqueMove : function(ratioFps, player) {
         var relativeSpeed = this.speed / ratioFps;
         var playerSelected = player;
-
+        console.log(playerSelected.position)
+        //console.log(playerSelected.headPlayer.position)
+        //console.log(playerSelected.playerBox.position)
         // Gestiond es angles
         if(( playerSelected.axisMovement[0] ||  playerSelected.axisMovement[1]) && ( playerSelected.axisMovement[2] || playerSelected.axisMovement[3] )){
           relativeSpeed = relativeSpeed / 1.5;
         }
 
         if(playerSelected.axisMovement){
+
             if(playerSelected.head){
                 var rotationPoint = playerSelected.head.rotation;
             }else{
@@ -240,7 +244,9 @@ Player.prototype = {
                 0,
                 parseFloat(Math.cos(parseFloat(rotationPoint.y))) * relativeSpeed
             );
-            playerSelected.playerBox.moveWithCollisions(forward);
+            playerSelected.position.x = playerSelected.position.x + parseFloat(Math.sin(parseFloat(rotationPoint.y))) * relativeSpeed
+            playerSelected.position.z = playerSelected.position.z + parseFloat(Math.cos(parseFloat(rotationPoint.y))) * relativeSpeed
+            //playerSelected.playerBox.moveWithCollisions(forward);
             }
             if(playerSelected.axisMovement[1]){
               backward = new BABYLON.Vector3(
@@ -651,15 +657,15 @@ Player.prototype = {
 
     // SEND data every 4 sec (ping for resynchro)
     sendActualData : function(){
-      return {
-          actualTypeWeapon : this.camera.weapons.actualWeapon,
-          armor : this.camera.armor,
-          life : this.camera.health,
-          position  : this.camera.playerBox.position,
-          rotation : this.camera.playerBox.rotation,
-          headRotation : this.camera.headPlayer.rotation,
-          axisMovement : this.camera.axisMovement
-      }
+        return {
+            actualTypeWeapon : this.camera.weapons.actualWeapon,
+            armor : this.camera.armor,
+            life : this.camera.health,
+            position  : this.camera.playerBox.position,
+            rotation : this.camera.playerBox.rotation,
+            headRotation : this.camera.headPlayer.rotation,
+            axisMovement : this.camera.axisMovement
+        }
     },
 
     launchRessurection : function(){
