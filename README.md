@@ -1,2 +1,3 @@
 # yann3d
-My first 3d Game
+## A simple 3D game
+### Stack : Express.js Babylon.js, Javascript
